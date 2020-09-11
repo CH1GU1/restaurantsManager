@@ -55,8 +55,8 @@ public class Restaurant {
 	}
 
 	public String getInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		String info = "";
+		info += "Name: "+name+"\nNIT: "+nit+"\nManager is: "+manager;
+		return info;
 	}
-
 }

@@ -1,9 +1,9 @@
 package model;
 import java.util.ArrayList;
+import java.lang.Comparable;
 
 
-
-public class RestaurantsManager {
+public class RestaurantsManager implements Comparable<Client> {
 
 
 	public ArrayList<Restaurant> restaurants;
@@ -24,20 +24,28 @@ public class RestaurantsManager {
 
 	//Methods of restaurants
 
-	public String addRestaurant(Restaurant restaurant) {
+	public String addRestaurant(String name, String nit, String manager) {
+		Restaurant R = new Restaurant(name, nit, manager);
 		String info = "";
-		boolean unique = uniqueProductCode(restaurant.getNit());
-		if(unique) {
-			restaurants.add(restaurant);
-			info += "Added!";
+		boolean added = false;
+		if(restaurants.isEmpty()) {
+			restaurants.add(R);
+			added = true;
+			info += "\n**Added!**\n";
 		}
-		else
-			info += "** Restaurant alredy exists **";
-
+		else if(!added){
+			boolean unique = uniqueRestaurantNit(R.getNit());
+			if(unique) {
+				restaurants.add(R);
+				info += "\n**Added!**\n";
+			}
+			else
+				info += "**\nRestaurant alredy exists\n**";
+		}	
 		return info;
 	}
 
-	public boolean uniqueRestaurantCode(String nit){
+	public boolean uniqueRestaurantNit(String nit){
 		boolean unique = true;
 		for(int i=0; i<restaurants.size() && unique; i++){
 			if(restaurants.get(i).getNit().equalsIgnoreCase(nit)){
@@ -50,7 +58,7 @@ public class RestaurantsManager {
 	public String showRestaurants() {
 		String info = "";
 		if (restaurants.isEmpty()) {
-			info = "There no restaurants in list\n";
+			info = "**\nThere no restaurants in list***\n";
 		}
 		else {
 			for (int i = 0; i < restaurants.size(); i++) {
@@ -63,18 +71,63 @@ public class RestaurantsManager {
 
 	//Methods of clients
 
-	public String addClient(Client client) {
+	public String addClient(String name, String lastName, String idNum, int choice, String tel, String adress) {
 		String info = "";
-		boolean unique = uniqueProductCode(client.getIdNum());
-		if(unique) {
-			clients.add(client);
-			info += "Added!";
-		}
-		else
-			info += "**Client alredy exists **";
+		String idType = ""; 
+		switch (choice) {
+		case 1:
+			idType = "CC";
+			break;
 
+		case 2:
+			idType = "PP";
+			break;
+
+		case 3:
+			idType = "CE";
+			break;
+
+		case 4:
+			idType = "TI";
+			break;
+
+		default:
+			info += "Choice not valid";
+			break;					
+		}
+		Client c = new Client(name, lastName, idNum, idType, tel, adress);
+		boolean unique = uniqueClientId(c.getIdNum());
+		if(clients.isEmpty()) {
+			clients.add(c);
+			info += "**Added!**";
+
+		} else if(!unique) {
+			info += "**Client alredy exists **";
+		} else {
+			//method sorting called
+			clients.add(compareTo(c),c);
+			info += "**Added!**";
+		} 
 		return info;
 	}
+
+	@Override	
+	public int compareTo(Client c) {
+		int r = 0;
+		boolean added = false;
+		for (int i = 0; i < clients.size() && !added; i++) {
+			int S = c.getFullName().compareToIgnoreCase(clients.get(i).getFullName());
+			if (S > 0) {
+				r = i;
+				added = true;
+			} else if(!added && i == clients.size()-1) {
+				i++;
+				r = i;
+				added = true;
+			}
+		}
+		return r;			
+	}  
 
 	public boolean uniqueClientId(String idNum){
 		boolean unique = true;
@@ -89,11 +142,12 @@ public class RestaurantsManager {
 	public String showClients() {
 		String info = "";
 		if (clients.isEmpty()) {
-			info = "There no restaurants in list\n";
+			info = "There no clients in list\n";
 		}
 		else {
 			for (int i = 0; i < clients.size(); i++) {
 				info += clients.get(i).getInfo()+"\n";
+				info += "\n"+i+"\n";
 			}	
 		}
 		return info;

@@ -15,12 +15,14 @@ public class Product {
 	 * @param info
 	 * @param cost
 	 */
-	public Product(String code, String name, String info, double cost, String restaurantNit) {
+	public Product(String code, String name, String info, double cost, String restNit) {
 		this.code = code;
 		this.name = name;
 		this.info = info;
 		this.cost = cost;
+		this.restaurantNit = restNit;
 	}
+	
 
 	public String getCode() {
 		return code;

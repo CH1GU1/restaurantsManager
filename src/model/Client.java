@@ -5,8 +5,10 @@ public class Client {
 	private String idType;
 	private String idNum;
 	private String name;
+	private String lastName;
 	private String telephone;
 	private String adress;
+
 
 	/**
 	 * 
@@ -16,13 +18,21 @@ public class Client {
 	 * @param telephone
 	 * @param adress
 	 */
-	public Client(String idType, String idNum, String name, String telephone, String adress) {
+	public Client(String name, String lastName, String idNum, String idType, String telephone, String adress) {
 		this.idType = idType;
 		this.idNum = idNum;
 		this.name = name;
+		this.lastName = lastName;
 		this.telephone = telephone;
 		this.adress = adress;
-		
+
+	}
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getIdType() {
@@ -84,10 +94,16 @@ public class Client {
 	public void setAdress(String adress) {
 		this.adress = adress;
 	}
+	public String getFullName() {
+		String fullName = "";
+		fullName = name+" "+lastName;
+		return fullName;
+	}
 
 	public String getInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		String info = "";
+		info += "Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAdress()+"\n";
+		return info;
 	}
 
 }
