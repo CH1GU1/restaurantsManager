@@ -105,5 +105,4 @@ public class Client {
 		info += "Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAdress()+"\n";
 		return info;
 	}
-
 }

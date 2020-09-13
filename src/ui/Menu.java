@@ -1,5 +1,7 @@
 package ui;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 import model.RestaurantsManager;
 
@@ -7,7 +9,7 @@ import model.RestaurantsManager;
 public class Menu {
 	private Scanner sc;
 	private RestaurantsManager restaurantsManager = new RestaurantsManager();
-	final static int EXIT_MENU = 7;
+	final static int EXIT_MENU = 8;
 
 
 	public Menu() {
@@ -24,7 +26,7 @@ public class Menu {
 			break;
 
 		case 2:
-
+			addProducts();
 
 			break;
 		case 3:
@@ -36,7 +38,7 @@ public class Menu {
 
 			break;
 		case 5:
-
+			showProducts();
 
 			break;
 		case 6:
@@ -44,6 +46,10 @@ public class Menu {
 
 			break;
 		case 7:
+			exportRestaurants();
+
+			break;
+		case 8:
 			exitProgram();
 			break;
 		default:
@@ -67,10 +73,12 @@ public class Menu {
 		menu += "4. Show restaurants list\n";
 		menu += "5. Show products list\n";
 		menu += "6. Show clients list\n";
-		menu += "7. Exit\n";
+		menu += "7. Export restaurants list\n";
+		menu += "8. Exit\n";
 		menu += "Please enter an option\n";
 		return menu;
 	}
+	//Adding objects 
 	private void addRestaurant() {
 		System.out.println("ADDING RESTAURANT");
 		System.out.println("Please enter the restaurant name: ");
@@ -79,15 +87,14 @@ public class Menu {
 		String nit = sc.nextLine();
 		System.out.println("Please enter the restaurant manager name: ");
 		String manager = sc.nextLine();
-		System.out.println(restaurantsManager.addRestaurant(name, nit, manager));
-	}
-	private void showRestaurants() {
-		System.out.println("\n***DEPLOYING RESTAURANTS LIST***\n");
-		System.out.println(restaurantsManager.showRestaurants());
-	}
-	private void showClients() {
-		System.out.println("\n***DEPLOYING CLIIENTS LIST***\n");	
-		System.out.println(restaurantsManager.showClients());
+		System.out.println("Saving data ...");
+		try{
+			System.out.println(restaurantsManager.addRestaurant(name, nit, manager));
+			System.out.println("The restaurant was saved succesfully");
+		}catch(IOException ioe){
+			System.out.println("The data can't be saved");
+		}
+
 	}
 	private void addClient() {
 		int choice;
@@ -109,6 +116,61 @@ public class Menu {
 		String adress = sc.nextLine();
 		System.out.println(restaurantsManager.addClient(name, lastName, idNum, choice,tel,adress));
 	}
+	private void addProducts() {
+		System.out.println("ADDING PRODUCT");
+		System.out.println("Please enter the product name: ");
+		String name = sc.nextLine();
+		System.out.println("Please enter the product code: ");
+		String code = sc.nextLine();
+		System.out.println("Please enter the product information: ");
+		String infoP = sc.nextLine();
+		System.out.println("Please enter the product cost: ");
+		double cost = Double.parseDouble(sc.nextLine());
+		System.out.println("Please enter the restaurant NIT");
+		showRestaurants();
+		String restNit = sc.nextLine();
+		System.out.println(restaurantsManager.addProduct(name, code, infoP, cost, restNit));
+	}
+	private void addOrder() {
+		System.out.println("ADDING ORDER");
+		System.out.println("Please enter the client ID number: ");
+		String idNum = sc.nextLine();
+		System.out.println("Please enter the restaurant NIT: ");
+		String restNit = sc.nextLine();
+		//SE DEBE VALIDAR QUE APAREZCAN LOS PRODUCTOS DEL RESTAURANTE ANTERIOR PARA ADICIONAR 
+		System.out.println("Please enter the product code: ");
+		String infoP = sc.nextLine();
+		System.out.println("Please enter the product cost: ");
+		double cost = Double.parseDouble(sc.nextLine());
+		System.out.println("Please enter the restaurant NIT");
+		showRestaurants();
+		//		String restNit = sc.nextLine();
+		//		System.out.println(restaurantsManager.addProduct(name, code, infoP, cost, restNit));
+	}
+	//Export
+	private void exportRestaurants() {
+		try{
+			restaurantsManager.exportData();
+			System.out.println("The data was exported succesfully");
+		}catch(IOException fnfe){
+			System.out.println("The data can't be export");
+		}
+	}
+
+	//Deploying 
+	private void showRestaurants() {
+		System.out.println("\n***DEPLOYING RESTAURANTS LIST***\n");
+		System.out.println(restaurantsManager.showRestaurants());
+	}
+	private void showClients() {
+		System.out.println("\n***DEPLOYING CLIIENTS LIST***\n");	
+		System.out.println(restaurantsManager.showClients());
+	}
+	private void showProducts() {
+		System.out.println("\n***DEPLOYING PRODUCTS LIST***\n");	
+		System.out.println(restaurantsManager.showProducts());
+	}
+
 
 	private void exitProgram() {
 		sc.close();

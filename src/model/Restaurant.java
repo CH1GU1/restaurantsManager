@@ -1,6 +1,8 @@
 package model;
+import java.io.Serializable;
 
-public class Restaurant {
+public class Restaurant implements Serializable {
+	 public final static long serialVersionUID = 1;
 
 	private String name;
 	private String nit;

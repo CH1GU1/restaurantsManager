@@ -1,6 +1,9 @@
 package model;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
+	 public final static long serialVersionUID = 1;
 
 	private String code;
 	private String name;
@@ -15,7 +18,7 @@ public class Product {
 	 * @param info
 	 * @param cost
 	 */
-	public Product(String code, String name, String info, double cost, String restNit) {
+	public Product(String name, String code, String info, double cost, String restNit) {
 		this.code = code;
 		this.name = name;
 		this.info = info;
@@ -70,6 +73,11 @@ public class Product {
 	 */
 	public void setCost(double cost) {
 		this.cost = cost;
+	}
+	public String getAllInfo() {
+		String allInfo = "";
+		allInfo += "\nName: "+name+"\nCode: "+code+"\nInformation: "+info+"\nCost: "+"$"+cost+"\nRestaurant NIT: "+restaurantNit;
+		return allInfo;
 	}
 
 }

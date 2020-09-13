@@ -1,30 +1,66 @@
 package model;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.lang.Comparable;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+import java.io.File;
 
 
 public class RestaurantsManager implements Comparable<Client> {
+	public final static String SAVE_PATH_FILE_RESTAURANTS = "data/restaurants.csv";
+	public final static String SAVE_PATH_FILE_CLIENTS = "data/clients.csv";
+	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.csv";
 
 
-	public ArrayList<Restaurant> restaurants;
+	public List<Restaurant> restaurants;
 	public ArrayList<Product> products;
 	public ArrayList<Client> clients;
 	public ArrayList<Order> orders;
 
+	private final static String SEPARATOR = ";";
 
 	public RestaurantsManager() {
-		restaurants = new ArrayList<>();
+		restaurants = new LinkedList<>();
+		//		restaurants = new ArrayList<>();
 		products = new ArrayList<>();
 		clients = new ArrayList<>();
 		orders = new ArrayList<>();
 	}
+	public String toString(){
+		String msg = "Restaurants List:\n";
+		for(Restaurant thisRestaurant:restaurants){
+			msg += thisRestaurant.getName()+SEPARATOR+thisRestaurant.getNit()+SEPARATOR+thisRestaurant.getManager()+"\n";
+		}
+		return msg;
+	}
+	public void saveData() throws IOException{
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_RESTAURANTS));
+		oos.writeObject(restaurants);
+		oos.close();
+	}
 
-
+	public void exportData() throws IOException {
+		File newTextFile = new File("data/restaurants.csv");
+		FileWriter fw = new FileWriter(newTextFile);
+		fw.write(toString());
+		fw.close();
+	}
 	//**************************************************************//
 
 	//Methods of restaurants
 
-	public String addRestaurant(String name, String nit, String manager) {
+	public String addRestaurant(String name, String nit, String manager) throws IOException {
 		Restaurant R = new Restaurant(name, nit, manager);
 		String info = "";
 		boolean added = false;
@@ -32,12 +68,14 @@ public class RestaurantsManager implements Comparable<Client> {
 			restaurants.add(R);
 			added = true;
 			info += "\n**Added!**\n";
+			saveData();
 		}
 		else if(!added){
 			boolean unique = uniqueRestaurantNit(R.getNit());
 			if(unique) {
 				restaurants.add(R);
 				info += "\n**Added!**\n";
+				saveData();
 			}
 			else
 				info += "**\nRestaurant alredy exists\n**";
@@ -147,7 +185,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		else {
 			for (int i = 0; i < clients.size(); i++) {
 				info += clients.get(i).getInfo()+"\n";
-				info += "\n"+i+"\n";
+				info += i+"\n";
 			}	
 		}
 		return info;
@@ -157,17 +195,30 @@ public class RestaurantsManager implements Comparable<Client> {
 
 	//Methods of products
 
-	public String addProduct(Product product) {
+	public String addProduct(String name, String code,String infoP, double cost, String restNit) {
 		String info = "";
-		boolean unique = uniqueProductCode(product.getCode());
-		if(unique) {
-			products.add(product);
-			info += "Added!";
+		if(restNitExist(restNit)) {
+			Product p = new Product(name, code, infoP, cost, restNit);
+			boolean unique = uniqueProductCode(p.getCode());
+			if(unique) {
+				products.add(p);
+				info += "Added!";
+			}
+			else
+				info += "** Product alredy exists **";	
+		} else {
+			info += "** Restaurant NIT doesn´t exists, product can´t be added! **";
 		}
-		else
-			info += "** Product alredy exists **";
-
 		return info;
+	}
+	public boolean restNitExist(String restNit) {
+		boolean exist = false;
+		for (int i = 0; i < restaurants.size(); i++) {
+			if(restNit.equalsIgnoreCase(restaurants.get(i).getNit())) {
+				exist = true;
+			}
+		}
+		return exist;
 	}
 
 	public boolean uniqueProductCode(String code){
@@ -187,7 +238,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		else {
 			for (int i = 0; i < products.size(); i++) {
-				info += products.get(i).getInfo()+"\n";
+				info += products.get(i).getAllInfo()+"\n";
 			}	
 		}
 		return info;
