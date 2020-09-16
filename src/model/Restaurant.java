@@ -61,4 +61,10 @@ public class Restaurant implements Serializable {
 		info += "Name: "+name+"\nNIT: "+nit+"\nManager is: "+manager;
 		return info;
 	}
+	public String toString() {
+		String concat = "";
+		concat += "\nName: "+name+"\nNIT: "+nit+"\nManager is: "+manager+"\n";
+		return concat;
+	}
+
 }

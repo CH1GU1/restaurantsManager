@@ -14,22 +14,20 @@ public class Order implements Serializable {
 	private String restaurantNit;
 	public enum status {REQUESTED, IN_PROCESS, SENT, DELIVERED}
 	public status orderStat;
-	public ArrayList<OrderList> orderList;
+	public ArrayList<Product> orderList;
 	Random random = new Random();
 	/**
 	 * 
 	 * @param code
 	 * @param date
 	 */
-	public Order(status orderStat, String ClientIdNum, String restNit, String productCode, int quantity) {
+	public Order(String ClientIdNum, String restNit) {
 		this.code = new BigInteger(50, random).toString(32);
 		this.date = getDate();
 		this.orderStat = orderStat; 
 		this.clientIdNum = ClientIdNum;
 		this.restaurantNit = restNit;
 		orderList = new ArrayList<>();
-		OrderList ordList = new OrderList(productCode,quantity);
-		orderList.add(ordList);
 
 	}
 	public String getDate() {

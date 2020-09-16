@@ -1,7 +1,9 @@
 package model;
 
-public class Client {
+import java.io.Serializable;
 
+public class Client implements Serializable{
+	private static final long serialVersionUID = 1;
 	private String idType;
 	private String idNum;
 	private String name;
@@ -104,5 +106,10 @@ public class Client {
 		String info = "";
 		info += "Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAdress()+"\n";
 		return info;
+	}
+	public String toString() {
+		String concat = "";
+		concat += "\n"+"Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAdress()+"\n";
+		return concat;
 	}
 }

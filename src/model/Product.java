@@ -3,13 +3,15 @@ package model;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-	 public final static long serialVersionUID = 1;
+	public final static long serialVersionUID = 1;
 
 	private String code;
 	private String name;
 	private String info;
 	private double cost;
 	private String restaurantNit;
+	private int quantity;
+
 
 	/**
 	 * 
@@ -25,7 +27,10 @@ public class Product implements Serializable {
 		this.cost = cost;
 		this.restaurantNit = restNit;
 	}
-	
+	public Product(String code, int quantity) {
+		this.code = code;
+		this.quantity = quantity;
+	}
 
 	public String getCode() {
 		return code;
@@ -73,6 +78,18 @@ public class Product implements Serializable {
 	 */
 	public void setCost(double cost) {
 		this.cost = cost;
+	}
+	public String getRestaurantNit() {
+		return restaurantNit;
+	}
+	public void setRestaurantNit(String restaurantNit) {
+		this.restaurantNit = restaurantNit;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 	public String getAllInfo() {
 		String allInfo = "";
