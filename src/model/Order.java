@@ -16,29 +16,22 @@ public class Order implements Serializable {
 	private String restaurantNit;
 	public enum status {REQUESTED, IN_PROCESS, SENT, DELIVERED}
 	public status orderStat;
-	public List<Product> orderList;
 	Random random = new Random();
 
 
-//	public Order(String ClientIdNum, String restNit,
-//			List<Product> orderList) {
-//		this.code = new BigInteger(50, random).toString(32);
-//		this.date = getDate();
-//		this.clientIdNum = clientIdNum;
-//		this.restaurantNit = restaurantNit;
-//		this.orderList = orderList;
-//	}
+	private List<Product> orderList;
 
-	public Order(String ClientIdNum, String restNit, List<Product> orderList) {
+
+	public Order(String ClientIdNum, String restNit) {
 		this.code = new BigInteger(50, random).toString(32);
 		this.date = getDate();
 		this.clientIdNum = ClientIdNum;
 		this.restaurantNit = restNit;
-		this.orderList = orderList;
+		orderList = new ArrayList<Product>() ;
 	}
 	public String getDate() {
 		String date = "";
-		date = ""+(LocalDate.now().getDayOfMonth())+LocalDate.now().getMonthValue()+LocalDate.now().getYear();
+		date += ""+(LocalDate.now().getDayOfMonth())+"/"+LocalDate.now().getMonthValue()+"/"+LocalDate.now().getYear();
 		return date;
 	}
 
@@ -69,13 +62,13 @@ public class Order implements Serializable {
 	public String toString() {
 		String concat = "";
 		concat += "Code: "+code+"\nDate: "+date+"\nClient ID: "+clientIdNum+"\nRestaurant NIT: "+restaurantNit+getOrdersList();
-	
+
 		return concat;
 	}
 
 	public String getInfo() {
 		String info = "";
-		info += "\nCode: "+code+"\nDate: "+date+"\nClient ID: "+clientIdNum+"\nRestaurant NIT: "+restaurantNit+"\n";
+		info += "\nCode: "+code+"\nDate: "+date+"\nClient ID: "+clientIdNum+"\nRestaurant NIT: "+restaurantNit+getOrdersList()+"\n";
 		return info;
 	}
 }

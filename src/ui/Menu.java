@@ -2,7 +2,6 @@ package ui;
 
 import java.io.IOException;
 import java.util.Scanner;
-
 import model.Order;
 import model.RestaurantsManager;
 
@@ -121,7 +120,6 @@ public class Menu {
 			restaurantsManager.loadData("client");
 			restaurantsManager.loadData("products");
 			restaurantsManager.loadData("orders");
-			//	restaurantsManager.loadData("ordersList");
 			System.out.println("The program data were loaded succesfully");
 		}catch(IOException | ClassNotFoundException e){
 			System.out.println("The data can't be load");
@@ -173,6 +171,7 @@ public class Menu {
 		}
 	}
 	private void addOrder() throws IOException  {
+//		List<Product> orderList = new ArrayList<Product>();
 		boolean done = false;
 		if(!restaurantsManager.clients.isEmpty() && !restaurantsManager.restaurants.isEmpty() && !restaurantsManager.products.isEmpty()) {
 			System.out.println("**ADDING ORDER**\nEntry the client ID number\n");
@@ -233,10 +232,10 @@ public class Menu {
 	}
 	private void showOrders() {
 		System.out.println("\n***DEPLOYING ORDERS LIST***\n");	
-		//		System.out.println(restaurantsManager.showOrders());
-		for (Order order : restaurantsManager.getOrders()) {
-			System.out.println(order.toString());
-		}
+	System.out.println(restaurantsManager.showOrders());
+//		for (Order order : restaurantsManager.getOrders()) {
+//			System.out.println(order.toString());
+//		}
 	}
 
 	//Deploying Sorting

@@ -17,7 +17,6 @@ public class RestaurantsManager implements Comparable<Client> {
 	public final static String SAVE_PATH_FILE_CLIENTS = "data/clients.ap2";
 	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.ap2";
 	public final static String SAVE_PATH_FILE_ORDERS = "data/orders.ap2";
-	public final static String SAVE_PATH_FILE_ORDERSLIST = "data/orders_list.ap2";
 
 
 	public List<Restaurant> restaurants;
@@ -81,7 +80,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		File c = new File(SAVE_PATH_FILE_CLIENTS);
 		File p = new File(SAVE_PATH_FILE_PRODUCTS);
 		File o = new File(SAVE_PATH_FILE_ORDERS);
-		File ol = new File(SAVE_PATH_FILE_ORDERSLIST);
 		boolean loaded = false;
 		if(r.exists()){
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(r));
@@ -105,24 +103,16 @@ public class RestaurantsManager implements Comparable<Client> {
 				products = (List<Product>)ois.readObject();
 				loaded = true;
 			}
-			ois.close();	
+			ois.close();
 		}
 		if(o.exists()){
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(p));
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(o));
 			if(type.equalsIgnoreCase("orders")) {
-				orders = (List<Order>)ois.readObject();
+				orders = (List<Order>)ois.readUnshared();
 				loaded = true;
 			}
 			ois.close();	
 		}
-		//		if(ol.exists()){
-		//			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(p));
-		//			if(type.equalsIgnoreCase("ordersList")) {
-		//				orders = (List<Order>)ois.readObject();
-		//				loaded = true;
-		//			}
-		//			ois.close();	
-		//		}
 		else {
 			loaded = false;
 		}
@@ -398,12 +388,13 @@ public class RestaurantsManager implements Comparable<Client> {
 
 	//Methods of orders
 
-	public String addOrder(String idNum, String Nit) {
+	public String addOrder(String idNum, String Nit) throws IOException {
 		String info = "";
 		Order order = new Order(idNum, Nit); 
 		boolean unique = uniqueOrderCode(order.getCode());
 		if(unique) {
 			orders.add(order);
+			saveData("orders");
 			info += "Added!";
 		}
 		else
