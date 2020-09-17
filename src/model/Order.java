@@ -1,8 +1,10 @@
 package model;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Order implements Serializable {
@@ -14,21 +16,25 @@ public class Order implements Serializable {
 	private String restaurantNit;
 	public enum status {REQUESTED, IN_PROCESS, SENT, DELIVERED}
 	public status orderStat;
-	public ArrayList<Product> orderList;
+	public List<Product> orderList;
 	Random random = new Random();
-	/**
-	 * 
-	 * @param code
-	 * @param date
-	 */
-	public Order(String ClientIdNum, String restNit) {
+
+
+//	public Order(String ClientIdNum, String restNit,
+//			List<Product> orderList) {
+//		this.code = new BigInteger(50, random).toString(32);
+//		this.date = getDate();
+//		this.clientIdNum = clientIdNum;
+//		this.restaurantNit = restaurantNit;
+//		this.orderList = orderList;
+//	}
+
+	public Order(String ClientIdNum, String restNit, List<Product> orderList) {
 		this.code = new BigInteger(50, random).toString(32);
 		this.date = getDate();
-		this.orderStat = orderStat; 
 		this.clientIdNum = ClientIdNum;
 		this.restaurantNit = restNit;
-		orderList = new ArrayList<>();
-
+		this.orderList = orderList;
 	}
 	public String getDate() {
 		String date = "";
@@ -43,9 +49,33 @@ public class Order implements Serializable {
 	public String getCode() {
 		return code;
 	}
+	public List<Product> getOrdersProductList(){
+		return orderList;
+	}
+	public String addProductInOrderList(String code, int quantity) {
+		String info = "";
+		Product p = new Product(code, quantity);
+		orderList.add(p);
+		info += "Added!";
+		return info;
+	}
+	public String getOrdersList(){
+		String info = "";
+		for (int i = 0; i < orderList.size(); i++) {
+			info += "\nProduct code: "+orderList.get(i).getCode()+"\nQuantity: "+orderList.get(i).getQuantity();
+		}
+		return info;
+	}
+	public String toString() {
+		String concat = "";
+		concat += "Code: "+code+"\nDate: "+date+"\nClient ID: "+clientIdNum+"\nRestaurant NIT: "+restaurantNit+getOrdersList();
+	
+		return concat;
+	}
+
 	public String getInfo() {
 		String info = "";
-		info += "Code: "+code+"\nDate: "+date+"\nClient ID: "+clientIdNum+"\nRestaurant NIT: "+restaurantNit;
+		info += "\nCode: "+code+"\nDate: "+date+"\nClient ID: "+clientIdNum+"\nRestaurant NIT: "+restaurantNit+"\n";
 		return info;
 	}
 }

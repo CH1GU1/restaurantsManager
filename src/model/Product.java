@@ -93,8 +93,13 @@ public class Product implements Serializable {
 	}
 	public String getAllInfo() {
 		String allInfo = "";
-		allInfo += "\nName: "+name+"\nCode: "+code+"\nInformation: "+info+"\nCost: "+"$"+cost+"\nRestaurant NIT: "+restaurantNit;
+		allInfo += "\nName: "+name+"\nCode: "+code+"\nInformation: "+info+"\nCost: "+"$"+cost+"\nRestaurant NIT: "+restaurantNit+"\n";
 		return allInfo;
+	}
+	public String toString() {
+		String concat = "";
+		concat += "\nName: "+name+"\nCode: "+code+"\nInformation: "+info+"\nCost: "+"$"+cost+"\nRestaurant NIT: "+restaurantNit+"\n";
+		return concat;
 	}
 
 }

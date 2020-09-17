@@ -16,6 +16,8 @@ public class RestaurantsManager implements Comparable<Client> {
 	public final static String SAVE_PATH_FILE_RESTAURANTS = "data/restaurants.ap2";
 	public final static String SAVE_PATH_FILE_CLIENTS = "data/clients.ap2";
 	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.ap2";
+	public final static String SAVE_PATH_FILE_ORDERS = "data/orders.ap2";
+	public final static String SAVE_PATH_FILE_ORDERSLIST = "data/orders_list.ap2";
 
 
 	public List<Restaurant> restaurants;
@@ -26,11 +28,10 @@ public class RestaurantsManager implements Comparable<Client> {
 	private final static String SEPARATOR = ";";
 
 	public RestaurantsManager() {
-		restaurants = new ArrayList<>();
-		products = new ArrayList<>();
-		clients = new ArrayList<>();
-		orders = new ArrayList<>();
-
+		restaurants = new ArrayList<Restaurant>();
+		products = new ArrayList<Product>();
+		clients = new ArrayList<Client>();
+		orders = new ArrayList<Order>();
 	}
 	public List<Restaurant> getRestaurants(){
 		return restaurants;
@@ -38,9 +39,12 @@ public class RestaurantsManager implements Comparable<Client> {
 	public List<Client> getClients(){
 		return clients;
 	}
-//	public void copyResttaurants() {
-//		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
-//	}
+	public List<Order> getOrders(){
+		return orders;
+	}
+	//	public void copyResttaurants() {
+	//		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
+	//	}
 	public String toString(){
 		String msg = "Restaurants List:\n";
 		for(Restaurant thisRestaurant:restaurants){
@@ -64,6 +68,11 @@ public class RestaurantsManager implements Comparable<Client> {
 			oos.writeObject(products);
 			oos.close();
 		}	
+		if(type.equalsIgnoreCase("orders")) {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH_FILE_ORDERS));
+			oos.writeObject(orders);
+			oos.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,6 +80,8 @@ public class RestaurantsManager implements Comparable<Client> {
 		File r = new File(SAVE_PATH_FILE_RESTAURANTS);
 		File c = new File(SAVE_PATH_FILE_CLIENTS);
 		File p = new File(SAVE_PATH_FILE_PRODUCTS);
+		File o = new File(SAVE_PATH_FILE_ORDERS);
+		File ol = new File(SAVE_PATH_FILE_ORDERSLIST);
 		boolean loaded = false;
 		if(r.exists()){
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(r));
@@ -94,8 +105,25 @@ public class RestaurantsManager implements Comparable<Client> {
 				products = (List<Product>)ois.readObject();
 				loaded = true;
 			}
-			ois.close();		
-		} else {
+			ois.close();	
+		}
+		if(o.exists()){
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(p));
+			if(type.equalsIgnoreCase("orders")) {
+				orders = (List<Order>)ois.readObject();
+				loaded = true;
+			}
+			ois.close();	
+		}
+		//		if(ol.exists()){
+		//			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(p));
+		//			if(type.equalsIgnoreCase("ordersList")) {
+		//				orders = (List<Order>)ois.readObject();
+		//				loaded = true;
+		//			}
+		//			ois.close();	
+		//		}
+		else {
 			loaded = false;
 		}
 		return loaded;
@@ -148,17 +176,23 @@ public class RestaurantsManager implements Comparable<Client> {
 	public String searchProductByRestaurant(String nit) {
 		String info = "";
 		for (int i = 0; i < products.size(); i++) {
-			for (int j = 0; j < restaurants.size(); j++) {
-				if(products.get(i).getRestaurantNit().equalsIgnoreCase(nit)) {
-					info += products.get(i).getAllInfo();
-				}
+			if(products.get(i).getRestaurantNit().equalsIgnoreCase(nit)) {
+				info += products.get(i).getAllInfo();
 			}
-			
-		}
-		
+		}	
 		return info;
 	}
-	
+	public int searchProductInProducts(String productCode){
+		int position = 0;
+		boolean found = !false;
+		for(int i=0; i<products.size() && found; i++){
+			if(products.get(i).getCode().equalsIgnoreCase(productCode)){
+				found = true;
+				position = i;
+			}
+		}
+		return position;
+	}
 
 	//**************************************************************//
 
@@ -388,7 +422,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		return unique;
 	}
 
-	public String showoOrders() {
+	public String showOrders() {
 		String info = "";
 		if (orders.isEmpty()) {
 			info = "There no orders in list\n";

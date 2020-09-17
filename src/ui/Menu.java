@@ -1,69 +1,70 @@
 package ui;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+
+import model.Order;
 import model.RestaurantsManager;
 
 
 public class Menu {
 	private Scanner sc;
 	private RestaurantsManager restaurantsManager = new RestaurantsManager();
-	final static int EXIT_MENU = 11;
+	final static int EXIT_MENU = 13;
 
 
 	public Menu() {
 		sc = new Scanner(System.in);
 
 	}
-
-
 	private void executeOperation(int option) {
 		switch (option) {
 		case 1:
 			addRestaurant();
-
 			break;
-
 		case 2:
 			addProducts();
-
 			break;
 		case 3:
 			addClient();
-
 			break;
 		case 4:
-			showRestaurants();
-
+			try {
+				addOrder();
+			} catch (IOException e) {
+				System.out.println("Order cant be saved!");
+			}
 			break;
 		case 5:
-			showProducts();
-
+			showRestaurants();
 			break;
 		case 6:
-			showClients();
-
+			showProducts();
 			break;
 		case 7:
-			showClientsSorted();
-
+			showClients();
 			break;
 		case 8:
-			exportRestaurants();
+			showOrders();
 
 			break;
 		case 9:
-			updateRestuarant();
+			showClientsSorted();
 
 			break;
 		case 10:
-			loadRestaurants();
+			exportRestaurants();
 
 			break;
 		case 11:
-			exitProgram();
+			updateRestuarant();
 
+			break;
+		case 12:
+			loadRestaurants();
+			break;
+		case 13:
+			exitProgram();
 			break;
 		default:
 
@@ -81,14 +82,16 @@ public class Menu {
 		menu += "1. Add restaurant\n";
 		menu += "2. Add product\n";
 		menu += "3. Add client\n";
-		menu += "4. Show restaurants list\n";
-		menu += "5. Show products list\n";
-		menu += "6. Show clients list\n";
-		menu += "7. Show clients list sorted by telephone\n";
-		menu += "8. Export restaurants list\n";
-		menu += "9. Update restaurants\n";
-		menu += "10. Load program data\n";
-		menu += "11. Exit\n";
+		menu += "4. Add Order\n";
+		menu += "5. Show restaurants list\n";
+		menu += "6. Show products list\n";
+		menu += "7. Show clients list\n";
+		menu += "8. Show orders list\n";
+		menu += "9. Show clients list sorted by telephone\n";
+		menu += "10. Export restaurants list\n";
+		menu += "11. Update restaurants\n";
+		menu += "12. Load program data\n";
+		menu += "13. Exit\n";
 		menu += "Please enter an option\n";
 		return menu;
 	}
@@ -117,7 +120,9 @@ public class Menu {
 			restaurantsManager.loadData("rest");
 			restaurantsManager.loadData("client");
 			restaurantsManager.loadData("products");
-			System.out.println("The restaurants were loaded succesfully");
+			restaurantsManager.loadData("orders");
+			//	restaurantsManager.loadData("ordersList");
+			System.out.println("The program data were loaded succesfully");
 		}catch(IOException | ClassNotFoundException e){
 			System.out.println("The data can't be load");
 		}
@@ -153,7 +158,7 @@ public class Menu {
 		String name = sc.nextLine();
 		System.out.println("Please enter the product code: ");
 		String code = sc.nextLine();
-		System.out.println("Please enter the product inforestaurantsManageration: ");
+		System.out.println("Please enter the product information: ");
 		String infoP = sc.nextLine();
 		System.out.println("Please enter the product cost: ");
 		double cost = Double.parseDouble(sc.nextLine());
@@ -167,43 +172,41 @@ public class Menu {
 			System.out.println("The data can't be saved");
 		}
 	}
-	private void addOrder() {
-		int choose = 0;
-		if(!restaurantsManager.clients.isEmpty()&&!restaurantsManager.restaurants.isEmpty()&&restaurantsManager.products.isEmpty()) {
-			System.out.println("ADDING ORDER\nEntry the client ID number\n");
+	private void addOrder() throws IOException  {
+		boolean done = false;
+		if(!restaurantsManager.clients.isEmpty() && !restaurantsManager.restaurants.isEmpty() && !restaurantsManager.products.isEmpty()) {
+			System.out.println("**ADDING ORDER**\nEntry the client ID number\n");
 			showClients();
 			String idNum = sc.nextLine();
-			System.out.println("Entry the restaurant NIT");
+			System.out.println("**Entry the restaurant NIT**");
 			showRestaurants();
 			String restNit = sc.nextLine();
 			if(!restaurantsManager.uniqueClientId(idNum) && !restaurantsManager.uniqueRestaurantNit(restNit)) {
 				int requestedClient = restaurantsManager.searchClientId(idNum);
 				int requestedRestaurant = restaurantsManager.searchRestaurantNit(restNit);
-				restaurantsManager.addOrder(restaurantsManager.getClients().get(requestedClient).getIdNum(), restaurantsManager.getRestaurants().get(requestedRestaurant).getNit());
-				System.out.println("Enter the code of product for add to order");
-				restaurantsManager.searchProductByRestaurant(restNit);
-				//HASTA AQUI VOY, HAY QUE IMPLEMENTAR EL INGRESO DEL PRODUCTO
-				System.out.println(restaurantsManager.restaurants.get(choose-1).showProducts());
-				choose3 = Integer.parseInt(sc.nextLine());
-
-				String name = restaurantsManager.restaurants.get(choose-1).products.get(choose3-1).getName();
-				String code = restaurantsManager.restaurants.get(choose-1).products.get(choose3-1).getCode();
-				String description = restaurantsManager.restaurants.get(choose-1).products.get(choose3-1).getDescription();
-				double cost = restaurantsManager.restaurants.get(choose-1).products.get(choose3-1).getCost();
-				System.out.println("Please enter the quantity of these product you need");
-				int quantity = Integer.parseInt(sc.nextLine());
-				restaurantsManager.orders.get(choose2-1).addProducts(name, code, description, cost, restaurantNit, quantity);
-				System.out.println("Some product more?\n1. Yes\n2. No");
-				int decision = Integer.parseInt(sc.nextLine());
-				if(decision == 1)
-					finished = false;
-				else if(decision == 2)
-					finished = true;
-
+				Order order = new Order(restaurantsManager.getClients().get(requestedClient).getIdNum(), restaurantsManager.getRestaurants().get(requestedRestaurant).getNit());
+				restaurantsManager.orders.add(order);
+				do {
+					System.out.println("Enter the code of product for add to order");		
+					System.out.println(restaurantsManager.searchProductByRestaurant(restNit)); 		//retorna productos de ese restaurante
+					String productCode = sc.nextLine();
+					System.out.println("Enter quantity of that product");
+					int quantity = Integer.parseInt(sc.nextLine());	
+					order.addProductInOrderList(productCode, quantity);
+					System.out.println("Product added to order list");
+					System.out.println("Do you want to add more products?\n1.Yes  /  2.No");
+					int option = Integer.parseInt(sc.nextLine());
+					if(option == 1)
+						done = !false;
+					else if(option == 2)
+						done = !true;
+					System.out.println("Order finalized");
+				} while (done);
+				restaurantsManager.saveData("orders");
 			}
 		}
 		else
-			System.out.println("We have no clients or restaurants or products registered yet");
+			System.out.println("Check data of clients, restaurants or products");
 	}
 	//Export
 	private void exportRestaurants() {
@@ -227,6 +230,13 @@ public class Menu {
 	private void showProducts() {
 		System.out.println("\n***DEPLOYING PRODUCTS LIST***\n");	
 		System.out.println(restaurantsManager.showProducts());
+	}
+	private void showOrders() {
+		System.out.println("\n***DEPLOYING ORDERS LIST***\n");	
+		//		System.out.println(restaurantsManager.showOrders());
+		for (Order order : restaurantsManager.getOrders()) {
+			System.out.println(order.toString());
+		}
 	}
 
 	//Deploying Sorting
