@@ -1,8 +1,9 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-public class Client implements Serializable{
+public class Client implements Serializable, Comparable<Client>{
 	private static final long serialVersionUID = 1;
 	private String idType;
 	private String idNum;
@@ -107,9 +108,17 @@ public class Client implements Serializable{
 		info += "Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAddress()+"\n";
 		return info;
 	}
+	@Override
 	public String toString() {
 		String concat = "";
 		concat += "\n"+"Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAddress()+"\n";
 		return concat;
+	}
+
+	@Override
+	public int compareTo(Client clt) {
+		int x = Integer.parseInt(telephone);
+		int y = (Integer.parseInt(clt.getTelephone()));
+		return x-y;
 	}
 }

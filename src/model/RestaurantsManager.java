@@ -1,8 +1,9 @@
 package model;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.lang.Comparable;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,13 +20,12 @@ public class RestaurantsManager implements Comparable<Client> {
 	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.ap2";
 	public final static String SAVE_PATH_FILE_ORDERS = "data/orders.ap2";
 
-
 	public List<Restaurant> restaurants;
 	public List<Product> products;
 	public List<Client> clients;
 	public List<Order> orders;
-	
-	
+
+
 	private final static String SEPARATOR = ";";
 
 	public RestaurantsManager() {
@@ -46,7 +46,7 @@ public class RestaurantsManager implements Comparable<Client> {
 	public List<Order> getOrders(){
 		return orders;
 	}
-
+	
 	public void copyRestaurants() {
 		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
 	}
@@ -138,14 +138,23 @@ public class RestaurantsManager implements Comparable<Client> {
 		Collections.sort(restaurants, nc);
 	}
 	public void sortByClientTelephone() {
-		ClientsTelephoneComparator tc = new ClientsTelephoneComparator();
-		Collections.sort(clients, tc);
+		Collections.sort(clients, Collections.reverseOrder());
 	}
-
+	public void sortByRestaurantNitInsertion() {
+		for (int j = 1; j < restaurants.size(); j++) {
+			Restaurant current = restaurants.get(j);
+			int i = j-1;
+			while ((i > -1) && ((restaurants.get(i).compareTo(current)) == 1)) {
+				restaurants.set(i+1, restaurants.get(i));
+				i--;
+			}
+			restaurants.set(i+1, current);
+		}
+	}
 	//**************************************************************//
 
 	//Updating & searching	
-	
+
 	public int searchRestaurantNit(String nit){
 		int position = 0;
 		boolean found = !false;
@@ -190,6 +199,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return position;
 	}
+
 	public String searchProductByRestaurant(String nit) {
 		String info = "";
 		for (int i = 0; i < products.size(); i++) {
@@ -263,7 +273,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}	
 		return info;
 	}
-
 	public boolean uniqueRestaurantNit(String nit){
 		boolean unique = true;
 		for(int i=0; i<restaurants.size() && unique; i++){
@@ -273,7 +282,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return unique;
 	}
-
 	public String showRestaurants() {
 		String info = "";
 		if (restaurants.isEmpty()) {
@@ -330,7 +338,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		} 
 		return info;
 	}
-
 	@Override	
 	public int compareTo(Client c) {
 		int r = 0;
@@ -348,7 +355,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return r;			
 	}  
-
 	public boolean uniqueClientId(String idNum){
 		boolean unique = true;
 		for(int i=0; i<clients.size() && unique; i++){
@@ -358,7 +364,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return unique;
 	}
-
 	public String showClients() {
 		String info = "";
 		if (clients.isEmpty()) {
@@ -370,17 +375,6 @@ public class RestaurantsManager implements Comparable<Client> {
 				info += i+"\n";
 			}	
 		}
-		return info;
-	}
-	public String showClientsSorted() {
-		String info = "";
-		if (clients.isEmpty()) {
-			info = "There no clients in list\n";
-		}
-		else {
-			sortByClientTelephone();
-			info += getClients()+"\n";
-		}	
 		return info;
 	}
 
@@ -414,7 +408,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return exist;
 	}
-
 	public boolean uniqueProductCode(String code){
 		boolean unique = true;
 		for(int i=0; i<products.size() && unique; i++){
@@ -424,7 +417,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return unique;
 	}
-
 	public String showProducts() {
 		String info = "";
 		if (products.isEmpty()) {
@@ -455,17 +447,6 @@ public class RestaurantsManager implements Comparable<Client> {
 
 		return info;
 	}
-	public int returnPosition(String code) {
-		int position = 0;
-		boolean found = !false;
-		for(int i=0; i<orders.size() && found; i++){
-			if(orders.get(i).getCode().equalsIgnoreCase(code)){
-				found = true;
-				position = i;
-			}
-		}
-		return position;
-	}
 	public boolean uniqueOrderCode(String code){
 		boolean unique = true;
 		for(int i=0; i<orders.size() && unique; i++){
@@ -475,7 +456,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return unique;
 	}
-
 	public String showOrders() {
 		String info = "";
 		if (orders.isEmpty()) {
