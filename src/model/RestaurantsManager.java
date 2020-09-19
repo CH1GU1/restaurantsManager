@@ -2,6 +2,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.lang.Comparable;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,7 +24,8 @@ public class RestaurantsManager implements Comparable<Client> {
 	public List<Product> products;
 	public List<Client> clients;
 	public List<Order> orders;
-
+	
+	
 	private final static String SEPARATOR = ";";
 
 	public RestaurantsManager() {
@@ -35,15 +37,19 @@ public class RestaurantsManager implements Comparable<Client> {
 	public List<Restaurant> getRestaurants(){
 		return restaurants;
 	}
+	public List<Product> getProducts(){
+		return products;
+	}
 	public List<Client> getClients(){
 		return clients;
 	}
 	public List<Order> getOrders(){
 		return orders;
 	}
-	//	public void copyResttaurants() {
-	//		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
-	//	}
+
+	public void copyRestaurants() {
+		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
+	}
 	public String toString(){
 		String msg = "Restaurants List:\n";
 		for(Restaurant thisRestaurant:restaurants){
@@ -73,7 +79,6 @@ public class RestaurantsManager implements Comparable<Client> {
 			oos.close();
 		}
 	}
-
 	@SuppressWarnings("unchecked")
 	public boolean loadData(String type) throws IOException, ClassNotFoundException{
 		File r = new File(SAVE_PATH_FILE_RESTAURANTS);
@@ -139,8 +144,8 @@ public class RestaurantsManager implements Comparable<Client> {
 
 	//**************************************************************//
 
-	//Updating & searching
-
+	//Updating & searching	
+	
 	public int searchRestaurantNit(String nit){
 		int position = 0;
 		boolean found = !false;
@@ -152,11 +157,33 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return position;
 	}
+	public int searchProductByCode(String code){
+		int position = 0;
+		boolean found = !false;
+		for(int i=0; i<products.size() && found; i++){
+			if(products.get(i).getCode().equalsIgnoreCase(code)){
+				found = true;
+				position = i;
+			}
+		}
+		return position;
+	}
 	public int searchClientId(String idNum){
 		int position = 0;
 		boolean found = !false;
 		for(int i=0; i<clients.size() && found; i++){
 			if(clients.get(i).getIdNum().equalsIgnoreCase(idNum)){
+				found = true;
+				position = i;
+			}
+		}
+		return position;
+	}
+	public int searchOrder(String orderCode){
+		int position = 0;
+		boolean found = !false;
+		for(int i=0; i<orders.size() && found; i++){
+			if(orders.get(i).getCode().equalsIgnoreCase(orderCode)){
 				found = true;
 				position = i;
 			}
@@ -182,6 +209,32 @@ public class RestaurantsManager implements Comparable<Client> {
 			}
 		}
 		return position;
+	}
+	public void updateNitProducts(String OldNit, String NewNit) {
+		for (int i = 0; i < products.size(); i++) {
+			if(products.get(i).getRestaurantNit().equalsIgnoreCase(OldNit)) {
+				products.get(i).setRestaurantNit(NewNit);
+			}
+		}
+	}
+	public void updateNitOrders(String OldNit, String NewNit) {
+		for (int i = 0; i < orders.size(); i++) {
+			if(orders.get(i).getRestaurantNit().equalsIgnoreCase(OldNit)) {
+				orders.get(i).setRestaurantNit(NewNit);
+			}
+		}
+	}
+	public void updateClientIdOrders(String OldId, String NewId) {
+		for (int i = 0; i < orders.size(); i++) {
+			if(orders.get(i).getClientIdNum().equalsIgnoreCase(OldId)) {
+				orders.get(i).setClientIdNum(NewId);
+			}
+		}
+	}
+	public void updateProductOrderCodeFromProduct(String oldCode, String newCode) {
+		for (int i = 0; i < orders.size(); i++) {
+			orders.get(i).updateProductsCode(oldCode, newCode);
+		}
 	}
 
 	//**************************************************************//
@@ -388,9 +441,9 @@ public class RestaurantsManager implements Comparable<Client> {
 
 	//Methods of orders
 
-	public String addOrder(String idNum, String Nit) throws IOException {
+	public String addOrder(String code, String idNum, String Nit) throws IOException {
 		String info = "";
-		Order order = new Order(idNum, Nit); 
+		Order order = new Order(code, idNum, Nit); 
 		boolean unique = uniqueOrderCode(order.getCode());
 		if(unique) {
 			orders.add(order);
@@ -402,7 +455,17 @@ public class RestaurantsManager implements Comparable<Client> {
 
 		return info;
 	}
-
+	public int returnPosition(String code) {
+		int position = 0;
+		boolean found = !false;
+		for(int i=0; i<orders.size() && found; i++){
+			if(orders.get(i).getCode().equalsIgnoreCase(code)){
+				found = true;
+				position = i;
+			}
+		}
+		return position;
+	}
 	public boolean uniqueOrderCode(String code){
 		boolean unique = true;
 		for(int i=0; i<orders.size() && unique; i++){

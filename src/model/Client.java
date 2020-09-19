@@ -9,7 +9,7 @@ public class Client implements Serializable{
 	private String name;
 	private String lastName;
 	private String telephone;
-	private String adress;
+	private String address;
 
 
 	/**
@@ -20,13 +20,13 @@ public class Client implements Serializable{
 	 * @param telephone
 	 * @param adress
 	 */
-	public Client(String name, String lastName, String idNum, String idType, String telephone, String adress) {
+	public Client(String name, String lastName, String idNum, String idType, String telephone, String address) {
 		this.idType = idType;
 		this.idNum = idNum;
 		this.name = name;
 		this.lastName = lastName;
 		this.telephone = telephone;
-		this.adress = adress;
+		this.address = address;
 
 	}
 	public String getLastName() {
@@ -85,16 +85,16 @@ public class Client implements Serializable{
 		this.telephone = telephone;
 	}
 
-	public String getAdress() {
-		return adress;
+	public String getAddress() {
+		return address;
 	}
 
 	/**
 	 * 
 	 * @param adress
 	 */
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	public String getFullName() {
 		String fullName = "";
@@ -104,12 +104,12 @@ public class Client implements Serializable{
 
 	public String getInfo() {
 		String info = "";
-		info += "Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAdress()+"\n";
+		info += "Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAddress()+"\n";
 		return info;
 	}
 	public String toString() {
 		String concat = "";
-		concat += "\n"+"Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAdress()+"\n";
+		concat += "\n"+"Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAddress()+"\n";
 		return concat;
 	}
 }
