@@ -1,8 +1,9 @@
 package model;
 import java.io.Serializable;
+import java.util.Comparator;
 
-public class Restaurant implements Serializable {
-	 public final static long serialVersionUID = 1;
+public class Restaurant implements Serializable,  Comparable<Restaurant> {
+	public final static long serialVersionUID = 1;
 
 	private String name;
 	private String nit;
@@ -61,10 +62,17 @@ public class Restaurant implements Serializable {
 		info += "Name: "+name+"\nNIT: "+nit+"\nManager is: "+manager;
 		return info;
 	}
+	@Override
 	public String toString() {
 		String concat = "";
 		concat += "\nName: "+name+"\nNIT: "+nit+"\nManager is: "+manager+"\n";
 		return concat;
 	}
 
-}
+
+	@Override
+	public int compareTo(Restaurant rest) {
+		int S = nit.compareToIgnoreCase(rest.getNit());
+		return S;
+	}
+}		

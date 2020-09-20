@@ -15,25 +15,38 @@ public class Order implements Serializable {
 	private String restaurantNit;
 	public enum status {REQUESTED, IN_PROCESS, SENT, DELIVERED}
 	public status orderStat;
-
 	Random random = new Random();
-
-
 	private List<Product> orderList;
 
 
 	public Order(String code, String ClientIdNum, String restNit) {
-//		this.code = new BigInteger(50, random).toString(32);
 		this.code = code;
 		this.date = getDate();
 		this.clientIdNum = ClientIdNum;
 		this.restaurantNit = restNit;
 		this.orderStat = status.REQUESTED;
 		orderList = new ArrayList<Product>() ;
-	
+
 	}
-	public status getOrderStat() {
-		return orderStat;
+	public String getOrderStat() {
+		return orderStat.name();
+	}
+	@SuppressWarnings({ "static-access" })
+	public String setOrderStatByCondition(String status) {
+		String info = "";
+		if(getOrderStat().equalsIgnoreCase("REQUESTED")) {
+			setOrderStat(orderStat.IN_PROCESS);
+			info += "Order status setted IN PROCESS";
+		} else if (getOrderStat().equalsIgnoreCase("IN_PROCESS")) {
+			setOrderStat(orderStat.SENT);
+			info += "Order status setted SENT";
+		} else if(getOrderStat().equalsIgnoreCase("SENT")){
+			setOrderStat(orderStat.DELIVERED);
+			info += "Order status setted DELIVERED";
+		} else if(getOrderStat().equalsIgnoreCase("DELIVERED")) {
+			info += "Order status is DELIVERED, Order closed!";
+		}
+		return info;
 	}
 	public void setOrderStat(status orderStat) {
 		this.orderStat = orderStat;
@@ -49,14 +62,16 @@ public class Order implements Serializable {
 		}
 		return position;
 	}
-	public String getProductsListEspecific(int pos) {
+	public String getProductsListEspecific() {
 		String info = "";
-			info += "\nProduct code: "+orderList.get(pos).getCode()+"\nQuantity: "+orderList.get(pos).getQuantity();
+		for (int j = 0; j < orderList.size(); j++) {
+			info += "\nProduct code: "+orderList.get(j).getCode()+"\nQuantity: "+orderList.get(j).getQuantity();
+		}	
 		return info;
 	}
 	public String getProductCodeEspecific(int pos) {
 		String info = "";
-			info += orderList.get(pos).getCode();
+		info += orderList.get(pos).getCode();
 		return info;
 	}
 	public String getDate() {
