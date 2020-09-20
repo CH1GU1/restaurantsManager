@@ -10,11 +10,7 @@ import model.RestaurantsManager;
 public class Menu {
 	private Scanner sc;
 	private RestaurantsManager restaurantsManager = new RestaurantsManager();
-<<<<<<< HEAD
 	final static int EXIT_MENU = 20;
-=======
-	final static int EXIT_MENU = 17;
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 	Random random = new Random();
 
 	public Menu() {
@@ -54,7 +50,6 @@ public class Menu {
 			break;
 		case 10:
 			showRestaurantsSortedByNit();
-<<<<<<< HEAD
 			
 			break;
 		case 11:
@@ -101,40 +96,6 @@ public class Menu {
 			
 			break;
 		case 20:
-=======
-
-			break;
-		case 11:
-			exportRestaurants();		
-
-			break;
-		case 12:
-			updateRestuarant();
-			
-			break;
-		case 13:
-			updateProduct();
-			
-			break;
-		case 14:
-			updateClient();
-
-			break;
-		case 15:
-			try {
-				updateOrder();
-				System.out.println("Saved new update!");
-			} catch (IOException e) {
-				System.err.println("Data can't be updated");
-			}
-			
-			break;
-		case 16:
-			loadProgram();
-			
-			break;
-		case 17:
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 			exitProgram();
 			break;
 		default:
@@ -160,7 +121,6 @@ public class Menu {
 		menu += "8. Show orders list\n";
 		menu += "9. Sort clients list by telephone\n";
 		menu += "10. Sort restaurants by NIT\n";
-<<<<<<< HEAD
 		menu += "11. Sort clients by ID\n";
 		menu += "12. Export Data\n";
 		menu += "13. Import Data\n";
@@ -172,16 +132,6 @@ public class Menu {
 		menu += "19. Search client by name\n";
 		menu += "20. Exit\n";
 
-=======
-		menu += "11. Export restaurants list\n";
-		menu += "12. Update restaurants\n";
-		menu += "13. Update products\n";
-		menu += "14. Update clients\n";
-		menu += "15. Update orders\n";
-		menu += "16. Load program data\n";
-		menu += "17. Exit\n";
-		
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 		menu += "Please enter an option\n";
 		return menu;
 	}
@@ -409,14 +359,11 @@ public class Menu {
 		System.out.println("\n***DEPLOYING RESTAURANTS LIST SORTED BY NIT***\n");	
 		restaurantsManager.sortByRestaurantNitInsertion();
 		System.out.println(restaurantsManager.getRestaurants());
-<<<<<<< HEAD
 	}
 	private void showClientsSortedById() {
 		System.out.println("\n***DEPLOYING CLIENTS LIST SORTED BY ID NUMBER***\n");	
 		restaurantsManager.sortByClientIdNumber();
 		System.out.println(restaurantsManager.getClients());
-=======
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 	}
 
 	//Update

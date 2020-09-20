@@ -31,11 +31,7 @@ public class RestaurantsManager implements Comparable<Client> {
 	public List<Order> orders;
 
 
-<<<<<<< HEAD
 	private final static String SEPARATOR = ",";
-=======
-	private final static String SEPARATOR = ";";
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 
 	public RestaurantsManager() {
 		restaurants = new ArrayList<Restaurant>();
@@ -55,17 +51,10 @@ public class RestaurantsManager implements Comparable<Client> {
 	public List<Order> getOrders(){
 		return orders;
 	}
-<<<<<<< HEAD
 
 	//	public void copyRestaurants() {
 	//		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
 	//	}
-=======
-	
-	public void copyRestaurants() {
-		List<Restaurant> copyRestaurants = new ArrayList<Restaurant>(restaurants);
-	}
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 	public String toString(){
 		String msg = "Restaurants List:\n";
 		for(Restaurant thisRestaurant:restaurants){
@@ -231,7 +220,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		Collections.sort(restaurants, nc);
 	}
 	public void sortByClientTelephone() {
-<<<<<<< HEAD
 		Collections.sort(clients, new SortbyClientTelephone());
 	}
 	public void sortByClientIdNumber() {
@@ -254,21 +242,8 @@ public class RestaurantsManager implements Comparable<Client> {
 		public int compare(Client c1, Client c2) {
 			return c2.getIdNum().compareTo(c1.getIdNum()); 
 		} 
-=======
-		Collections.sort(clients, Collections.reverseOrder());
 	}
-	public void sortByRestaurantNitInsertion() {
-		for (int j = 1; j < restaurants.size(); j++) {
-			Restaurant current = restaurants.get(j);
-			int i = j-1;
-			while ((i > -1) && ((restaurants.get(i).compareTo(current)) == 1)) {
-				restaurants.set(i+1, restaurants.get(i));
-				i--;
-			}
-			restaurants.set(i+1, current);
-		}
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
-	}
+
 	//**************************************************************//
 
 	//Updating & searching	
@@ -317,7 +292,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return position;
 	}
-<<<<<<< HEAD
 	public boolean searchClientFullName(String name, String lastName){
 		String fullName = "";
 		fullName = name+" "+lastName;
@@ -329,8 +303,6 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return found;
 	}
-=======
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
 
 	public String searchProductByRestaurant(String nit) {
 		String info = "";

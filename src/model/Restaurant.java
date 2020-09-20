@@ -72,20 +72,7 @@ public class Restaurant implements Serializable,  Comparable<Restaurant> {
 
 	@Override
 	public int compareTo(Restaurant rest) {
-<<<<<<< HEAD
 		int S = nit.compareToIgnoreCase(rest.getNit());
 		return S;
 	}
 }		
-=======
-		int res = 0;
-        if (Integer.parseInt(this.nit) < Integer.parseInt(rest.getNit())) {
-            res = -1;
-        }
-        if (Integer.parseInt(this.nit) > Integer.parseInt(rest.getNit())) {
-            res = 1;
-        }
-        return res;
-	}
-}
->>>>>>> c18ad5f29654a89df40d34f3f488c0a2c454a73e
