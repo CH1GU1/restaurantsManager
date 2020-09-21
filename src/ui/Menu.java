@@ -258,6 +258,7 @@ public class Menu {
 		else
 			System.out.println("Check data of clients, restaurants or products");
 	}
+	
 	//Export
 	private void exportData() {
 		try{
@@ -268,6 +269,7 @@ public class Menu {
 		}
 	}
 
+	//Import
 	private void importData() {
 		System.out.println("IMPORTING DATA");
 		boolean condition = true;
@@ -277,7 +279,10 @@ public class Menu {
 			switch (key) {
 			case 1:
 				try {
-					restaurantsManager.importRestaurants("data/restaurants.csv");
+					System.out.println("Enter the patch/name of the file to import restaurants");
+					String fileName = sc.nextLine();
+					System.out.println("Importing data... please wait");
+					restaurantsManager.importRestaurants(fileName);
 					System.out.println("The data was imported succesfully");
 				} catch (IOException e) {
 					System.out.println("The data can't be imported");
@@ -285,11 +290,23 @@ public class Menu {
 				condition = false;
 				break;
 			case 2:
-
+				try {
+				System.out.println("Enter the patch/name of the file to import products");
+				String fileName = sc.nextLine();
+				System.out.println("Importing data... please wait");
+				restaurantsManager.importProducts(fileName);
+				System.out.println("The data was imported succesfully");
+				} catch (IOException e) {
+					System.out.println("The data can't be imported");
+				}
+				condition = false;
 				break;
 			case 3:
 				try {
-					restaurantsManager.importClients("data/clients.csv");
+					System.out.println("Enter the patch/name of the file to import clients");
+					String fileName = sc.nextLine();
+					System.out.println("Importing data... please wait");
+					restaurantsManager.importClients(fileName);
 					System.out.println("The data was imported succesfully");
 				} catch (IOException e) {
 					System.out.println("The data can't be imported");
@@ -307,6 +324,7 @@ public class Menu {
 		
 
 	}
+	
 	//Searching 
 	private void SearchClientByName() {
 		System.out.println("**FINDING CLIENT**");
@@ -404,24 +422,31 @@ public class Menu {
 			case 3:
 				System.out.println("Please enter the new restaurant NIT: ");
 				String nit = sc.nextLine();
-				restaurantsManager.getRestaurants().get(requested).setNit(nit);
-				restaurantsManager.updateNitProducts(restNit, nit);
-				restaurantsManager.updateNitOrders(restNit, nit);
-				System.out.println("Saving data ...");
-				try{
-					restaurantsManager.saveData("rest");
-					restaurantsManager.saveData("products");
-					restaurantsManager.saveData("orders");
-					System.out.println("The restaurant was updated succesfully");
-				}catch(IOException ioe){
-					System.out.println("The data can't be updated");
+				if(restaurantsManager.uniqueRestaurantNit(nit)) {
+					restaurantsManager.getRestaurants().get(requested).setNit(nit);
+					restaurantsManager.updateNitProducts(restNit, nit);
+					restaurantsManager.updateNitOrders(restNit, nit);
+					System.out.println("Saving data ...");
+					try{
+						restaurantsManager.saveData("rest");
+						restaurantsManager.saveData("products");
+						restaurantsManager.saveData("orders");
+						System.out.println("The restaurant was updated succesfully");
+					}catch(IOException ioe){
+						System.out.println("The data can't be updated");
+					}
+				} 
+				else {
+					System.out.println("Nit already exist! Try another");
 				}
 				break;
 			default:
 				System.out.println("Select a correct option");
 				break;
 			}
-		} System.out.println("Restaurant NIT does not exist!");
+		} else {
+			System.out.println("Restaurant NIT does not exist!");
+		}
 	}
 	private void updateClient() {
 		System.out.println("UPDATING CLIENT");
@@ -460,16 +485,20 @@ public class Menu {
 			case 3:
 				System.out.println("Please enter the new client ID: ");
 				String newId = sc.nextLine();
-				restaurantsManager.getClients().get(requested).setIdNum(newId);		
-				restaurantsManager.updateClientIdOrders(idNum,newId);	
-				System.out.println("Saving data ...");
-				try{
-					restaurantsManager.saveData("client");
-					restaurantsManager.saveData("orders");
-					System.out.println("The client was updated successfully");
-				}catch(IOException ioe){
-					System.out.println("The data can't be updated");
-				}
+				if(restaurantsManager.uniqueClientId(newId)) {
+					restaurantsManager.getClients().get(requested).setIdNum(newId);		
+					restaurantsManager.updateClientIdOrders(idNum,newId);	
+					System.out.println("Saving data ...");
+					try{
+						restaurantsManager.saveData("client");
+						restaurantsManager.saveData("orders");
+						System.out.println("The client was updated successfully");
+					}catch(IOException ioe){
+						System.out.println("The data can't be updated");
+					}
+				} else {
+					System.out.println("ID already registered, try other!");
+				}		
 				break;
 			case 4:
 				System.out.println("Please enter the new client ID type: ");
@@ -536,7 +565,9 @@ public class Menu {
 				System.out.println("Select a correct option");
 				break;
 			}
-		} System.out.println("Client ID does not exist");
+		} else {
+			System.out.println("Client ID does not exist");
+		}
 	}
 	private void updateProduct() {
 		System.out.println("UPDATING PRODUCT");
@@ -587,22 +618,28 @@ public class Menu {
 			case 4:
 				System.out.println("Please enter the new product code: ");
 				String code = sc.nextLine();
-				restaurantsManager.getProducts().get(requested).setCode(code);
-				restaurantsManager.updateProductOrderCodeFromProduct(pCode,code);
-				System.out.println("Saving data ...");
-				try{
-					restaurantsManager.saveData("products");
-					restaurantsManager.saveData("orders");
-					System.out.println("The product was updated successfully");
-				}catch(IOException ioe){
-					System.out.println("The data can't be updated");
+				if(restaurantsManager.uniqueProductCode(code)) {
+					restaurantsManager.getProducts().get(requested).setCode(code);
+					restaurantsManager.updateProductOrderCodeFromProduct(pCode,code);
+					System.out.println("Saving data ...");
+					try{
+						restaurantsManager.saveData("products");
+						restaurantsManager.saveData("orders");
+						System.out.println("The product was updated successfully");
+					}catch(IOException ioe){
+						System.out.println("The data can't be updated");
+					}
+				} else {
+					System.out.println("Code already in use, try other!");
 				}
 				break;
 			default:
 				System.out.println("Select a correct option");
 				break;
 			}	
-		} System.out.println("Product code does not exist");
+		} else {
+			System.out.println("Product code does not exist");
+		}
 	}
 	private void updateOrder() throws IOException {
 		System.out.println("UPDATING ORDER");

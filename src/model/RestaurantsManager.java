@@ -130,68 +130,71 @@ public class RestaurantsManager implements Comparable<Client> {
 	}
 	// Exporting Data...
 	public void exportData() throws FileNotFoundException {
-		{
-			PrintWriter pw = new PrintWriter("data/restaurants.csv");
-			for(Restaurant elem:restaurants) {
-				pw.println(elem.getName()+SEPARATOR+elem.getNit()+SEPARATOR+elem.getManager());
-			}
-			pw.close();
-		}
-		{
-			PrintWriter pw = new PrintWriter("data/products.csv");
-			for(Product elem:products) {
-				pw.println(elem.getName()+SEPARATOR+elem.getCode()+SEPARATOR+elem.getInfo()+SEPARATOR+elem.getCost()+SEPARATOR+elem.getRestaurantNit());
-			}
-			pw.close();
-		}
-		{
-			PrintWriter pw = new PrintWriter("data/clients.csv");
-			for(Client elem:clients) {
-				pw.println(elem.getName()+SEPARATOR+elem.getLastName()+SEPARATOR+elem.getIdNum()+SEPARATOR+elem.getIdType()+SEPARATOR+elem.getTelephone()+SEPARATOR+elem.getAddress());
-			}
-			pw.close();
-		}
-		//		{
-		//			PrintWriter pw = new PrintWriter("data/orders.csv");
-		//			for(Order elem:orders) {
-		//				pw.println(elem.getName()+SEPARATOR+elem.getLastName()+SEPARATOR+elem.getIdNum()+SEPARATOR+elem.getIdType()+SEPARATOR+elem.getTelephone()+SEPARATOR+elem.getAddress());
-		//			}
-		//			pw.close();
-		//		}
+//		{
+//			PrintWriter pw = new PrintWriter("data/restaurants.csv");
+//			for(Restaurant elem:restaurants) {
+//				pw.println(elem.getName()+SEPARATOR+elem.getNit()+SEPARATOR+elem.getManager());
+//			}
+//			pw.close();
+//		}
+//		{
+//			PrintWriter pw = new PrintWriter("data/products.csv");
+//			for(Product elem:products) {
+//				pw.println(elem.getName()+SEPARATOR+elem.getCode()+SEPARATOR+elem.getInfo()+SEPARATOR+elem.getCost()+SEPARATOR+elem.getRestaurantNit());
+//			}
+//			pw.close();
+//		}
+//		{
+//			PrintWriter pw = new PrintWriter("data/clients.csv");
+//			for(Client elem:clients) {
+//				pw.println(elem.getName()+SEPARATOR+elem.getLastName()+SEPARATOR+elem.getIdNum()+SEPARATOR+elem.getIdType()+SEPARATOR+elem.getTelephone()+SEPARATOR+elem.getAddress());
+//			}
+//			pw.close();
+//		}
+				{
+					PrintWriter pw = new PrintWriter("data/orders.csv");
+					for(Order elem:orders) {
+						pw.println(elem.getCode()+SEPARATOR+elem.getDate()+SEPARATOR+elem.getClientIdNum()+SEPARATOR+elem.getOrderStat()+SEPARATOR+elem.getRestaurantNit()+SEPARATOR+elem.getOrdersList());
+					}
+					pw.close();
+				}
 	}
 	public void importRestaurants(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("data/restaurants.csv"));
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		br.readLine();
 		String line = br.readLine();
 		while(line!=null) {
 			String[] parts = line.split(SEPARATOR);
 			String name = parts[0];
 			String nit = parts[1];
 			String manager = parts[2];
-			Restaurant rest = new Restaurant(name,nit,manager);
-			restaurants.add(rest);
+			addRestaurant(name,nit,manager);
+			//			Restaurant rest = new Restaurant(name,nit,manager);
+			//			restaurants.add(rest);
 			line = br.readLine();
 		}
 		br.close();
 	}
 	public void importClients(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("data/clients.csv"));
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		br.readLine();
 		String line = br.readLine();
 		while(line!=null) {
 			String[] parts = line.split(SEPARATOR);
 			String name = parts[0];
 			String lastName = parts[1];
 			String idNum = parts[2];
-			String idType = parts[3];
+			int idType = Integer.parseInt(parts[3]);
 			String telephone = parts[4];
 			String address= parts[5];
-			Client clie = new Client(name,lastName, idNum, idType, telephone, address);
-			clients.add(clie);
+			addClient(name, lastName, idNum, idType, telephone, address);
 			line = br.readLine();
 		}
 		br.close();
 	}
 	public void importProducts(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("data/products.csv"));
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		br.readLine();
 		String line = br.readLine();
 		while(line!=null) {
 			String[] parts = line.split(SEPARATOR);
@@ -200,17 +203,12 @@ public class RestaurantsManager implements Comparable<Client> {
 			String info = parts[2];
 			double cost = Double.parseDouble(parts[3]);
 			String restNit = parts[4];
-			addProduct(name, code, info, cost,restNit);
-			//			Product prod = new Product(name,code,info,cost,restNit);
-			//			products.add(prod);
+			addProduct(name, code, info, cost, restNit);
 			line = br.readLine();
 		}
 		br.close();
 	}
-	//	public void addElement(String name,String nit, String manager) {
-	//		Restaurant rest = new Restaurant(name,nit,manager);
-	//		restaurants.add(rest);
-	//	}
+
 	//**************************************************************//
 
 	//Sorting methods
@@ -228,9 +226,9 @@ public class RestaurantsManager implements Comparable<Client> {
 	public void sortByRestaurantNitInsertion() {
 		Collections.sort(restaurants);
 	}
-	
+
 	//	sorting anonymus class
-	
+
 	class SortbyClientTelephone implements Comparator<Client> { 
 		@Override
 		public int compare(Client c1, Client c2) {
@@ -393,7 +391,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		else {
 			sortByRestaurantName();
-			info += getRestaurants()+"\n";
+			info += getRestaurants()+"\n";		
 		}
 		return info;
 	}
