@@ -305,7 +305,7 @@ public class Menu {
 				int requestedOrderPos = restaurantsManager.searchOrder(code);
 				do {
 					System.out.println("Enter the code of product for add to order");		
-					System.out.println(restaurantsManager.searchProductByRestaurant(restNit)); 		//retorna productos de ese restaurante
+					System.out.println(restaurantsManager.searchProductByRestaurant(restNit)); 
 					String productCode = sc.nextLine();
 					System.out.println("Enter quantity of that product");
 					int quantity = Integer.parseInt(sc.nextLine());	
@@ -338,6 +338,8 @@ public class Menu {
 
 	//------------Export--------------
 
+	
+	//***************ARREGLAR EL CODIGO PARA PASARLE EL SEPARADOR PEDIDO POR EL USUARIO*********************************************
 	/**
 	 * This method export the orders in .csv format, could catch an IOException if an error occur during exporting.
 	 * <b>pre:</b>One order as minimum must be added.<br>
@@ -516,7 +518,7 @@ public class Menu {
 	}
 	//*************************************************************************************
 
-
+								
 	//--------------Update----------------
 	
 	/**

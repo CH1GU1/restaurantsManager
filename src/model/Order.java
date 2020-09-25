@@ -153,7 +153,6 @@ public class Order implements Serializable {
 	 * 
 	 * <b>post:</b><br>
 	 */
-	
 	public void setClientIdNum(String clientIdNum) {
 		this.clientIdNum = clientIdNum;
 	}
