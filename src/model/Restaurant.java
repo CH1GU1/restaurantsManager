@@ -1,6 +1,5 @@
 package model;
 import java.io.Serializable;
-import java.util.Comparator;
 
 public class Restaurant implements Serializable,  Comparable<Restaurant> {
 	public final static long serialVersionUID = 1;

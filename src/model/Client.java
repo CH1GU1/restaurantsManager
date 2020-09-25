@@ -1,7 +1,6 @@
-package model;
+	package model;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 public class Client implements Serializable, Comparable<Client>{
 	private static final long serialVersionUID = 1;

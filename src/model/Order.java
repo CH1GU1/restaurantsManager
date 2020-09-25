@@ -62,18 +62,6 @@ public class Order implements Serializable {
 		}
 		return position;
 	}
-	public String getProductsListEspecific() {
-		String info = "";
-		for (int j = 0; j < orderList.size(); j++) {
-			info += "\nProduct code: "+orderList.get(j).getCode()+"\nQuantity: "+orderList.get(j).getQuantity();
-		}	
-		return info;
-	}
-	public String getProductCodeEspecific(int pos) {
-		String info = "";
-		info += orderList.get(pos).getCode();
-		return info;
-	}
 	public String getDate() {
 		String date = "";
 		date += ""+(LocalDate.now().getDayOfMonth())+"/"+LocalDate.now().getMonthValue()+"/"+LocalDate.now().getYear();

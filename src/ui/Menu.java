@@ -3,6 +3,10 @@ package ui;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
+import exceptions.NullCodeException;
+import exceptions.WrongIdException;
+import exceptions.WrongNitException;
+
 import java.math.BigInteger;
 import model.RestaurantsManager;
 
@@ -29,7 +33,12 @@ public class Menu {
 			addClient();
 			break;
 		case 4:
-			addOrder();
+			try {
+				addOrder();
+			} catch (WrongIdException | WrongNitException | NullCodeException e) {
+				System.err.println(e.getMessage());
+			}
+
 			break;
 		case 5:
 			showRestaurants();
@@ -50,7 +59,7 @@ public class Menu {
 			break;
 		case 10:
 			showRestaurantsSortedByNit();
-			
+
 			break;
 		case 11:
 			showClientsSortedById();		
@@ -58,42 +67,50 @@ public class Menu {
 			break;
 		case 12:
 			exportData();				
-			
+
 			break;
 		case 13:
 			importData();			
 
 			break;
 		case 14:
-			updateRestuarant();
-					
+			try {
+				updateRestuarant();
+			} catch (WrongNitException e) {
+				System.err.println(e.getMessage());
+			}
+
 			break;
 		case 15:
-			updateProduct();
-			
+			try {
+				updateProduct();
+			} catch (NullCodeException e) {
+				System.err.println(e.getMessage());
+			}
+
 			break;
 		case 16:
-			updateClient();
-			
-			
+			try {
+				updateClient();
+			} catch (WrongIdException e) {
+				System.err.println(e.getMessage());
+			}
+
 			break;
 		case 17:
 			try {
 				updateOrder();
-				System.out.println("Saved new update!");
-			} catch (IOException e) {
-				System.err.println("Data can't be updated");
+			} catch (IOException | NullCodeException e) {
+			System.err.println(e.getMessage());
 			}
-				
-
 			break;
 		case 18:
 			loadProgram();	
-			
+
 			break;
 		case 19:
 			SearchClientByName();
-			
+
 			break;
 		case 20:
 			exitProgram();
@@ -211,7 +228,7 @@ public class Menu {
 			System.out.println("The data can't be saved");
 		}
 	}
-	private void addOrder()  {
+	private void addOrder() throws WrongIdException, WrongNitException, NullCodeException  {
 		boolean done = false;
 		if(!restaurantsManager.clients.isEmpty() && !restaurantsManager.restaurants.isEmpty() && !restaurantsManager.products.isEmpty()) {
 			System.out.println("**ADDING ORDER**\nEntry the client ID number\n");
@@ -246,6 +263,10 @@ public class Menu {
 						done = !true;
 					System.out.println("Order finalized");
 				} while (done);
+			} else if(restaurantsManager.uniqueClientId(idNum) == true) {
+				throw new WrongIdException();
+			}else if(restaurantsManager.uniqueRestaurantNit(restNit) == true) {
+				throw new WrongNitException();
 			}
 			try {
 				System.out.println("Saving order...");
@@ -258,7 +279,7 @@ public class Menu {
 		else
 			System.out.println("Check data of clients, restaurants or products");
 	}
-	
+
 	//Export
 	private void exportData() {
 		try{
@@ -291,11 +312,11 @@ public class Menu {
 				break;
 			case 2:
 				try {
-				System.out.println("Enter the patch/name of the file to import products");
-				String fileName = sc.nextLine();
-				System.out.println("Importing data... please wait");
-				restaurantsManager.importProducts(fileName);
-				System.out.println("The data was imported succesfully");
+					System.out.println("Enter the patch/name of the file to import products");
+					String fileName = sc.nextLine();
+					System.out.println("Importing data... please wait");
+					restaurantsManager.importProducts(fileName);
+					System.out.println("The data was imported succesfully");
 				} catch (IOException e) {
 					System.out.println("The data can't be imported");
 				}
@@ -321,10 +342,10 @@ public class Menu {
 				break;
 			}	
 		} while (condition);
-		
+
 
 	}
-	
+
 	//Searching 
 	private void SearchClientByName() {
 		System.out.println("**FINDING CLIENT**");
@@ -334,7 +355,7 @@ public class Menu {
 		String lastName = sc.nextLine();
 		boolean found;
 		long start = System.currentTimeMillis();
-		found = restaurantsManager.searchClientFullName(name, lastName);
+		found = restaurantsManager.searchClientName(name, lastName);
 		long end = System.currentTimeMillis();
 		if(found) {
 			System.out.println("Client :"+name+" "+lastName+" was found!");
@@ -345,8 +366,6 @@ public class Menu {
 		System.out.println("End: "+end);
 		System.out.println("Searching time was: "+(end-start));
 	}
-
-
 
 	//Deploying 
 	private void showRestaurants() {
@@ -385,7 +404,7 @@ public class Menu {
 	}
 
 	//Update
-	private void updateRestuarant() {
+	private void updateRestuarant() throws WrongNitException {
 		System.out.println("UPDATING RESTAURANT");
 		showRestaurants();
 		System.out.println("Please enter the restaurant NIT to be update: ");
@@ -445,10 +464,10 @@ public class Menu {
 				break;
 			}
 		} else {
-			System.out.println("Restaurant NIT does not exist!");
+			throw new WrongNitException();
 		}
 	}
-	private void updateClient() {
+	private void updateClient() throws WrongIdException {
 		System.out.println("UPDATING CLIENT");
 		showClients();
 		System.out.println("Please enter the client ID to be update: ");
@@ -566,10 +585,10 @@ public class Menu {
 				break;
 			}
 		} else {
-			System.out.println("Client ID does not exist");
+			throw new WrongIdException();
 		}
 	}
-	private void updateProduct() {
+	private void updateProduct() throws NullCodeException {
 		System.out.println("UPDATING PRODUCT");
 		showProducts();
 		System.out.println("Please enter the product code to be update: ");
@@ -638,10 +657,10 @@ public class Menu {
 				break;
 			}	
 		} else {
-			System.out.println("Product code does not exist");
+			throw new NullCodeException();
 		}
 	}
-	private void updateOrder() throws IOException {
+	private void updateOrder() throws IOException, NullCodeException {
 		System.out.println("UPDATING ORDER");
 		showOrders();
 		System.out.println("Please enter the order code to be update: ");
@@ -676,7 +695,7 @@ public class Menu {
 				}
 			} while(!statusChanged);
 		} else {
-			System.out.println("Order code does not exist!");
+			throw new NullCodeException();
 		}
 
 	}
