@@ -12,15 +12,29 @@ import model.RestaurantsManager;
 
 
 public class Menu {
+	
+	//Initialization and constants declaration
+	
 	private Scanner sc;
 	private RestaurantsManager restaurantsManager = new RestaurantsManager();
 	final static int EXIT_MENU = 20;
 	Random random = new Random();
-
+	
+	/**
+	 *This method initialize the scanner.
+	 *<b>pre:</b> <br>
+	 *<b>post:</b>The scanner is ready<br>
+	 */
 	public Menu() {
 		sc = new Scanner(System.in);
 
 	}
+	/**
+	 * This method receives the menu option .
+	 * <b>pre:</b>Select a valid option.<br>
+	 * 
+	 * <b>post:</b><br>
+	 */
 	private void executeOperation(int option) {
 		switch (option) {
 		case 1:
@@ -66,7 +80,7 @@ public class Menu {
 
 			break;
 		case 12:
-			exportData();				
+			exportOrder();				
 
 			break;
 		case 13:
@@ -101,7 +115,7 @@ public class Menu {
 			try {
 				updateOrder();
 			} catch (IOException | NullCodeException e) {
-			System.err.println(e.getMessage());
+				System.err.println(e.getMessage());
 			}
 			break;
 		case 18:
@@ -121,6 +135,12 @@ public class Menu {
 		}
 
 	}
+	/**
+	 * This method deploy the main program menu.
+	 * <b>pre:</b>Select a valid option.<br>
+	 * 
+	 * <b>post:</b><br>
+	 */
 	private String getMenu() {
 		String menu;
 		menu = "============================\n";
@@ -139,7 +159,7 @@ public class Menu {
 		menu += "9. Sort clients list by telephone\n";
 		menu += "10. Sort restaurants by NIT\n";
 		menu += "11. Sort clients by ID\n";
-		menu += "12. Export Data\n";
+		menu += "12. Export Order\n";
 		menu += "13. Import Data\n";
 		menu += "14. Update restaurants\n";
 		menu += "15. Update products\n";
@@ -152,7 +172,33 @@ public class Menu {
 		menu += "Please enter an option\n";
 		return menu;
 	}
+	//----------Deserialize--------------
+	/**
+	 * This method deserialize the program data.
+	 * <b>pre:</b>Data must be created for deserialize a previous data.<br>
+	 * 
+	 * <b>post:</b>Program is now loaded with the last changes<br>
+	 */
+	private void loadProgram() {
+		System.out.println("Loading data ...");
+		try{
+			restaurantsManager.loadData("rest");
+			restaurantsManager.loadData("client");
+			restaurantsManager.loadData("products");
+			restaurantsManager.loadData("orders");
+			System.out.println("The program data were loaded succesfully");
+		}catch(IOException | ClassNotFoundException e){
+			System.out.println("The data can't be load");
+		}
+	}
 	//Adding objects 
+	/**
+	 * This method add a restaurant and serialize, could catch an IOException if an error occur during serializing.
+	 * <b>pre:</b>The restaurant to add must have a different NIT if it NIT already exist.<br>
+	 * <b>pre:</b>The restaurant NIT have to be integer only.<br>
+	 * 
+	 * <b>post:</b>The restaurant is added and is serialized<br>
+	 */
 	private void addRestaurant() {
 		System.out.println("ADDING RESTAURANT");
 		System.out.println("Please enter the restaurant name: ");
@@ -171,18 +217,13 @@ public class Menu {
 		}
 
 	}
-	private void loadProgram() {
-		System.out.println("Loading data ...");
-		try{
-			restaurantsManager.loadData("rest");
-			restaurantsManager.loadData("client");
-			restaurantsManager.loadData("products");
-			restaurantsManager.loadData("orders");
-			System.out.println("The program data were loaded succesfully");
-		}catch(IOException | ClassNotFoundException e){
-			System.out.println("The data can't be load");
-		}
-	}
+	/**
+	 * This method add a client and serialize, could catch an IOException if an error occur during serializing.
+	 * <b>pre:</b>The client to add must have a different ID number if it ID already exist.<br>
+	 * <b>pre:</b>The client ID number have to be integer only.<br>
+	 * 
+	 * <b>post:</b>The client is added and is serialized<br>
+	 */
 	private void addClient() {
 		int choice;
 		System.out.println("ADDING CLIENT");
@@ -208,6 +249,14 @@ public class Menu {
 			System.out.println("The data can't be saved");
 		}
 	}
+	/**
+	 * This method add a product and serialize, could catch an IOException if an error occur during serializing.
+	 * <b>pre:</b>The product to add must have a different code if it code already exist.<br>
+	 * <b>pre:</b>The product code number have to be integer only.<br>
+	 * <b>pre:</b>One restaurant as minimum must be added for register the product linked with his NIT.<br>
+	 * 
+	 * <b>post:</b>The product is added to a restaurant and is serialized<br>
+	 */
 	private void addProducts() {
 		System.out.println("ADDING PRODUCT");
 		System.out.println("Please enter the product name: ");
@@ -228,6 +277,13 @@ public class Menu {
 			System.out.println("The data can't be saved");
 		}
 	}
+	/**
+	 * This method add a order and serialize, could catch an IOException if an error occur during serializing, could throw WrongIdException, WrongNitException, NullCodeException.
+	 * <b>pre:</b>One restaurant as minimum must be added with a product as minimum.<br>
+	 * <b>pre:</b>One client as minimum must be added.<br>
+	 * 
+	 * <b>post:</b>The order is added to a client and is serialized<br>
+	 */
 	private void addOrder() throws WrongIdException, WrongNitException, NullCodeException  {
 		boolean done = false;
 		if(!restaurantsManager.clients.isEmpty() && !restaurantsManager.restaurants.isEmpty() && !restaurantsManager.products.isEmpty()) {
@@ -280,8 +336,15 @@ public class Menu {
 			System.out.println("Check data of clients, restaurants or products");
 	}
 
-	//Export
-	private void exportData() {
+	//------------Export--------------
+
+	/**
+	 * This method export the orders in .csv format, could catch an IOException if an error occur during exporting.
+	 * <b>pre:</b>One order as minimum must be added.<br>
+	 * 
+	 * <b>post:</b>The order is exported<br>
+	 */
+	private void exportOrder() {
 		try{
 			restaurantsManager.exportData();
 			System.out.println("The data was exported succesfully");
@@ -290,7 +353,16 @@ public class Menu {
 		}
 	}
 
-	//Import
+	//-------------Import-------------
+
+	
+	//FALTA IMPORTAR LAS ORDENES EN ESTE METODO******************************************************
+	/**
+	 * This method import the program data in .csv format chosen by user, could catch an IOException if an error occur during importing.
+	 * <b>pre:</b>The columns of .csv file are separated by comma.<br>
+	 * 
+	 * <b>post:</b>The data requested in .csv file is imported to the program<br>
+	 */
 	private void importData() {
 		System.out.println("IMPORTING DATA");
 		boolean condition = true;
@@ -335,7 +407,7 @@ public class Menu {
 				condition = false;
 				break;
 			case 4:
-
+				//AQUI SE DEBE IMPORTAR LAS ORDENES XD 
 				break;
 			default:
 				System.out.println("Select a correct option");
@@ -346,7 +418,14 @@ public class Menu {
 
 	}
 
-	//Searching 
+	//-------------Searching------------ 
+
+	/**
+	 * This method request a client name and lastname, then call a method in Restaurants Manager to execute the binary search, finally show the searching time.
+	 * <b>pre:</b>A client must be created.<br>
+	 * 
+	 * <b>post:</b>The data requested in .csv file is imported to the program<br>
+	 */
 	private void SearchClientByName() {
 		System.out.println("**FINDING CLIENT**");
 		System.out.println("Enter the first name of client ");
@@ -367,31 +446,64 @@ public class Menu {
 		System.out.println("Searching time was: "+(end-start));
 	}
 
-	//Deploying 
+	//-------------Deploying------------
+
+	/**
+	 * This method call a method in restaurants manager and deploy the restaurants list sorted alphabetically ascending.
+	 * <b>pre:</b>A restaurant must be added.<br>
+	 * 
+	 * <b>post:</b>The restaurants list is deployed alphabetically ascending<br>
+	 */
 	private void showRestaurants() {
 		System.out.println("\n***DEPLOYING RESTAURANTS LIST***\n");
 		System.out.println(restaurantsManager.showRestaurants());
 	}
+	/**
+	 * This method call a method in restaurants manager and deploy the clients list.
+	 * <b>pre:</b>A client must be added.<br>
+	 * 
+	 * <b>post:</b>The clients list is deployed<br>
+	 */
 	private void showClients() {
 		System.out.println("\n***DEPLOYING CLIIENTS LIST***\n");	
 		System.out.println(restaurantsManager.showClients());
 	}
+	/**
+	 * This method call a method in restaurants manager and deploy the products list.
+	 * <b>pre:</b>A client must be added.<br>
+	 * 
+	 * <b>post:</b>The restaurants list is deployed<br>
+	 */
 	private void showProducts() {
 		System.out.println("\n***DEPLOYING PRODUCTS LIST***\n");	
 		System.out.println(restaurantsManager.showProducts());
 	}
+	/**
+	 * This method call a method in restaurants manager and deploy the orders list.
+	 * <b>pre:</b>An order must be added.<br>
+	 * 
+	 * <b>post:</b>The orders list is deployed<br>
+	 */
 	private void showOrders() {
 		System.out.println("\n***DEPLOYING ORDERS LIST***\n");	
 		System.out.println(restaurantsManager.showOrders());
 	}
 
-	//Deploying Sorting
+	//----------Deploying Sorting--------
+
+	/**
+	 * This method call a method in restaurants manager and deploy the clients list sorted by falling telephone .
+	 * <b>pre:</b>A client must be added.<br>
+	 * 
+	 * <b>post:</b>The clients list sorted by falling telephone is deployed<br>
+	 */
 	private void showClientsSortedByTelephone() {
 		System.out.println("\n***DEPLOYING CLIENTS LIST SORTED BY TELEPHONE***\n");	
 		restaurantsManager.sortByClientTelephone();
 		System.out.println("After sorting by telephone");
 		System.out.println(restaurantsManager.getClients());
 	}
+	//REVISAR EL USO DE ESTOS DOS METODOS XD **********************************************
 	private void showRestaurantsSortedByNit() {
 		System.out.println("\n***DEPLOYING RESTAURANTS LIST SORTED BY NIT***\n");	
 		restaurantsManager.sortByRestaurantNitInsertion();
@@ -402,8 +514,17 @@ public class Menu {
 		restaurantsManager.sortByClientIdNumber();
 		System.out.println(restaurantsManager.getClients());
 	}
+	//*************************************************************************************
 
-	//Update
+
+	//--------------Update----------------
+	
+	/**
+	 * This method update restaurants information, could catch an IOException if an error occur during serializing, could throw WrongNitException if restaurant NIT does not exist.
+	 * <b>pre:</b>A restaurant must be added.<br>
+	 * 
+	 * <b>post:</b>The restaurant selected is updated by the user<br>
+	 */
 	private void updateRestuarant() throws WrongNitException {
 		System.out.println("UPDATING RESTAURANT");
 		showRestaurants();
@@ -467,6 +588,12 @@ public class Menu {
 			throw new WrongNitException();
 		}
 	}
+	/**
+	 * This method update clients information, could catch an IOException if an error occur during serializing, could throw WrongIdException if client ID number does not exist.
+	 * <b>pre:</b>A client must be added.<br>
+	 * 
+	 * <b>post:</b>The client selected is updated by the user<br>
+	 */
 	private void updateClient() throws WrongIdException {
 		System.out.println("UPDATING CLIENT");
 		showClients();
@@ -588,6 +715,12 @@ public class Menu {
 			throw new WrongIdException();
 		}
 	}
+	/**
+	 * This method update products information, could catch an IOException if an error occur during serializing, could throw NullCodeException if product code does not exist.
+	 * <b>pre:</b>A client must be added.<br>
+	 * 
+	 * <b>post:</b>The client selected is updated by the user<br>
+	 */
 	private void updateProduct() throws NullCodeException {
 		System.out.println("UPDATING PRODUCT");
 		showProducts();
@@ -660,6 +793,12 @@ public class Menu {
 			throw new NullCodeException();
 		}
 	}
+	/**
+	 * This method update orders information, could catch an IOException if an error occur during serializing, could throw NullCodeException if order code does not exist.
+	 * <b>pre:</b>A order must be added.<br>
+	 * 
+	 * <b>post:</b>The order selected is updated by the user<br>
+	 */
 	private void updateOrder() throws IOException, NullCodeException {
 		System.out.println("UPDATING ORDER");
 		showOrders();
@@ -699,15 +838,34 @@ public class Menu {
 		}
 
 	}
+	/**
+	 *This method close the scanner and then, the program.
+	 *<b>pre:</b> <br>
+	 *<b>post:</b>The program is closed<br>
+	 */
 	private void exitProgram() {
 		sc.close();
 		System.out.println("Good bye!");
 	}
+	/**
+	 *This method read the option selected in main menu.
+	 *<b>pre:</b>Program is already running<br>
+	 *
+	 *@return op
+	 *
+	 *<b>post:</b>The program is closed<br>
+	 */
 	private int readOption() {
 		int op;
 		op = Integer.parseInt(sc.nextLine());
 		return op;
 	}
+	/**
+	 * This method start the program, and deserialize program data.
+	 * <b>pre:</b><br>
+	 * 
+	 * <b>post:</b><br>
+	 */
 	public void startMenu() {
 		String menu = getMenu();
 		int option;
