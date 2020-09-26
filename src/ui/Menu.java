@@ -12,14 +12,14 @@ import model.RestaurantsManager;
 
 
 public class Menu {
-	
+
 	//Initialization and constants declaration
-	
+
 	private Scanner sc;
 	private RestaurantsManager restaurantsManager = new RestaurantsManager();
-	final static int EXIT_MENU = 20;
+	final static int EXIT_MENU = 17;
 	Random random = new Random();
-	
+
 	/**
 	 *This method initialize the scanner.
 	 *<b>pre:</b> <br>
@@ -68,26 +68,18 @@ public class Menu {
 
 			break;
 		case 9:
-			showClientsSortedByTelephone();
+			showClientsSortedByTelephone();		
 
 			break;
 		case 10:
-			showRestaurantsSortedByNit();
-
-			break;
-		case 11:
-			showClientsSortedById();		
-
-			break;
-		case 12:
 			exportOrder();				
 
 			break;
-		case 13:
+		case 11:
 			importData();			
 
 			break;
-		case 14:
+		case 12:
 			try {
 				updateRestuarant();
 			} catch (WrongNitException e) {
@@ -95,7 +87,7 @@ public class Menu {
 			}
 
 			break;
-		case 15:
+		case 13:
 			try {
 				updateProduct();
 			} catch (NullCodeException e) {
@@ -103,7 +95,7 @@ public class Menu {
 			}
 
 			break;
-		case 16:
+		case 14:
 			try {
 				updateClient();
 			} catch (WrongIdException e) {
@@ -111,22 +103,18 @@ public class Menu {
 			}
 
 			break;
-		case 17:
+		case 15:
 			try {
 				updateOrder();
 			} catch (IOException | NullCodeException e) {
 				System.err.println(e.getMessage());
 			}
 			break;
-		case 18:
-			loadProgram();	
-
-			break;
-		case 19:
+		case 16:
 			SearchClientByName();
 
 			break;
-		case 20:
+		case 17:
 			exitProgram();
 			break;
 		default:
@@ -157,22 +145,22 @@ public class Menu {
 		menu += "7. Show clients list\n";
 		menu += "8. Show orders list\n";
 		menu += "9. Sort clients list by telephone\n";
-		menu += "10. Sort restaurants by NIT\n";
-		menu += "11. Sort clients by ID\n";
-		menu += "12. Export Order\n";
-		menu += "13. Import Data\n";
-		menu += "14. Update restaurants\n";
-		menu += "15. Update products\n";
-		menu += "16. Update clients\n";
-		menu += "17. Update orders\n";
-		menu += "18. Load program data\n";
-		menu += "19. Search client by name\n";
-		menu += "20. Exit\n";
-
+		menu += "10. Export Order\n";
+		menu += "11. Import Data\n";
+		menu += "12. Update restaurants\n";
+		menu += "13. Update products\n";
+		menu += "14. Update clients\n";
+		menu += "15. Update orders\n";
+		menu += "16. Search client by name\n";
+		menu += "17. Exit\n";
 		menu += "Please enter an option\n";
 		return menu;
 	}
+
+
 	//----------Deserialize--------------
+
+
 	/**
 	 * This method deserialize the program data.
 	 * <b>pre:</b>Data must be created for deserialize a previous data.<br>
@@ -191,7 +179,11 @@ public class Menu {
 			System.out.println("The data can't be load");
 		}
 	}
+
+
 	//Adding objects 
+
+
 	/**
 	 * This method add a restaurant and serialize, could catch an IOException if an error occur during serializing.
 	 * <b>pre:</b>The restaurant to add must have a different NIT if it NIT already exist.<br>
@@ -338,8 +330,8 @@ public class Menu {
 
 	//------------Export--------------
 
+
 	
-	//***************ARREGLAR EL CODIGO PARA PASARLE EL SEPARADOR PEDIDO POR EL USUARIO*********************************************
 	/**
 	 * This method export the orders in .csv format, could catch an IOException if an error occur during exporting.
 	 * <b>pre:</b>One order as minimum must be added.<br>
@@ -347,8 +339,12 @@ public class Menu {
 	 * <b>post:</b>The order is exported<br>
 	 */
 	private void exportOrder() {
+		System.out.println("***EXPORTING ORDERS***");
+		System.out.println("Please entry the separator to use between columns of the .csv file");
+		System.out.println("Suggest comma (,)");
+		String separ = sc.nextLine();
 		try{
-			restaurantsManager.exportData();
+			restaurantsManager.exportOrder(separ);
 			System.out.println("The data was exported succesfully");
 		}catch(IOException fnfe){
 			System.out.println("The data can't be export");
@@ -357,7 +353,7 @@ public class Menu {
 
 	//-------------Import-------------
 
-	
+
 	//FALTA IMPORTAR LAS ORDENES EN ESTE METODO******************************************************
 	/**
 	 * This method import the program data in .csv format chosen by user, could catch an IOException if an error occur during importing.
@@ -501,26 +497,15 @@ public class Menu {
 	 */
 	private void showClientsSortedByTelephone() {
 		System.out.println("\n***DEPLOYING CLIENTS LIST SORTED BY TELEPHONE***\n");	
-		restaurantsManager.sortByClientTelephone();
+		restaurantsManager.SortbyClientTelephoneInsertion();
 		System.out.println("After sorting by telephone");
-		System.out.println(restaurantsManager.getClients());
-	}
-	//REVISAR EL USO DE ESTOS DOS METODOS XD **********************************************
-	private void showRestaurantsSortedByNit() {
-		System.out.println("\n***DEPLOYING RESTAURANTS LIST SORTED BY NIT***\n");	
-		restaurantsManager.sortByRestaurantNitInsertion();
-		System.out.println(restaurantsManager.getRestaurants());
-	}
-	private void showClientsSortedById() {
-		System.out.println("\n***DEPLOYING CLIENTS LIST SORTED BY ID NUMBER***\n");	
-		restaurantsManager.sortByClientIdNumber();
 		System.out.println(restaurantsManager.getClients());
 	}
 	//*************************************************************************************
 
-								
+
 	//--------------Update----------------
-	
+
 	/**
 	 * This method update restaurants information, could catch an IOException if an error occur during serializing, could throw WrongNitException if restaurant NIT does not exist.
 	 * <b>pre:</b>A restaurant must be added.<br>
@@ -840,6 +825,11 @@ public class Menu {
 		}
 
 	}
+
+
+	//Program execute 
+
+
 	/**
 	 *This method close the scanner and then, the program.
 	 *<b>pre:</b> <br>
@@ -870,6 +860,7 @@ public class Menu {
 	 */
 	public void startMenu() {
 		String menu = getMenu();
+		loadProgram();
 		int option;
 		do {
 			System.out.println(menu);

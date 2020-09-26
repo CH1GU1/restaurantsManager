@@ -1,10 +1,10 @@
 package model;
 import java.io.Serializable;
 
-public class Client implements Serializable, Comparable<Client>{
-	
+public class Client implements Serializable{
+
 	//Initialization and constants declaration
-	
+
 	private static final long serialVersionUID = 1;
 	private String idType;
 	private String idNum;
@@ -207,19 +207,5 @@ public class Client implements Serializable, Comparable<Client>{
 		String concat = "";
 		concat += "\n"+"Name: "+getName()+"\nLast name: "+lastName+"\nID number: "+getIdNum()+"\nID type:"+getIdType()+"\nTelephone: "+getTelephone()+"\nAdress: "+getAddress()+"\n";
 		return concat;
-	}
-	/**
-	 * This method returns the operation of compare to clients telephone
-	 * <b><pre>:<br>Two clients must be created as minimum<br>
-	 * 
-	 * @return x-y integer of the operation
-	 * 
-	 * <b>post:</b><br>
-	 */
-	@Override
-	public int compareTo(Client clt) {
-		int x = Integer.parseInt(telephone);
-		int y = (Integer.parseInt(clt.getTelephone()));
-		return x-y;
 	}
 }

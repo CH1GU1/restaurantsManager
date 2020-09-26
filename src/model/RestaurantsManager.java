@@ -20,9 +20,9 @@ import java.io.File;
 
 
 public class RestaurantsManager implements Comparable<Client> {
-	
+
 	//Initialization and constants declaration
-	
+
 	public final static String SAVE_PATH_FILE_RESTAURANTS = "data/restaurants.ap2";
 	public final static String SAVE_PATH_FILE_CLIENTS = "data/clients.ap2";
 	public final static String SAVE_PATH_FILE_PRODUCTS = "data/products.ap2";
@@ -35,7 +35,7 @@ public class RestaurantsManager implements Comparable<Client> {
 
 	private final static String SEPARATOR = ",";
 
-	
+
 	/**
 	 *  This method is the constructor of RestaurantsManager
 	 * <b><pre>:<br><br>
@@ -94,14 +94,6 @@ public class RestaurantsManager implements Comparable<Client> {
 	}
 
 
-//	public String toString(){
-//		String msg = "Restaurants List:\n";
-//		for(Restaurant thisRestaurant:restaurants){
-//			msg += thisRestaurant.getName()+SEPARATOR+thisRestaurant.getNit()+SEPARATOR+thisRestaurant.getManager()+"\n";
-//		}
-//		return msg;
-//	}
-	
 	/**
 	 * This method serialize the program data
 	 * <b><pre>:<br><br>
@@ -190,27 +182,10 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return loaded;
 	}
-	
-	// Exporting Data...
-	
-	/**
-	 * This method export the orders information
-	 * <b><pre>:<br>An order as minimum must be added<br>
-	 * 
-	 * @param separ String of the separator to use between columns
-	 * @throws FileNotFoundException
-	 * 
-	 * <b>post:</b>Orders was exported<br>
-	 */
-	public void exportData(String separ) throws FileNotFoundException {
-				{
-					PrintWriter pw = new PrintWriter("data/orders.csv");
-					for(Order elem:orders) {
-						pw.println(elem.getCode()+SEPARATOR+elem.getDate()+SEPARATOR+elem.getClientIdNum()+SEPARATOR+elem.getOrderStat()+SEPARATOR+elem.getRestaurantNit()+SEPARATOR+elem.getOrdersList());
-					}
-					pw.close();
-				}
-	}
+
+	// Exporting & importing data...
+
+
 	/**
 	 * This method import the restaurants information
 	 * <b><pre>:<br>The file must be exist and with information to load<br>
@@ -288,41 +263,113 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		br.close();
 	}
+	/**
+	 * This method export the orders information
+	 * <b><pre>:<br>An order as minimum must be added<br>
+	 * 
+	 * @param separator String of the separator to use between columns
+	 * @throws FileNotFoundException
+	 * 
+	 * <b>post:</b>Orders was exported in a .csv file<br>
+	 */
+	public void exportOrder(String separator) throws FileNotFoundException {
+		sortOrder();
+		PrintWriter pw = new PrintWriter("data/orders.csv");
+		pw.println("Code"+separator+"Date"+separator+"Client ID"+separator+"Status"+separator+"Restaurant Nit"+separator+"Product code"+separator+"Product quantity");
+		for (int i = 0; i < orders.size(); i++)  {
+			if (orders.get(i).getOrdersProductList().size()==1) 
+				pw.println(orders.get(i).getCode()+separator+orders.get(i).getDate()+separator+orders.get(i).getClientIdNum()+separator+orders.get(i).getOrderStat()+separator+orders.get(i).getRestaurantNit()+separator+orders.get(i).getOrdersProductList().get(0).getInfoToExport(separator));
+			if(orders.get(i).getOrdersProductList().size()>1) {	
+				for (int j = 0; j < orders.get(i).getOrdersProductList().size(); j++) {
+					pw.println(orders.get(i).getCode()+separator+orders.get(i).getDate()+separator+orders.get(i).getClientIdNum()+separator+orders.get(i).getOrderStat()+separator+orders.get(i).getRestaurantNit()+separator+orders.get(i).getOrdersProductList().get(j).getInfoToExport(separator));
+				}					
+			}
+		}
+		pw.close();
+	}
 
-	//**************************************************************//
+
+
+	//*****************************************************************************************************//
 
 	//Sorting methods
 
-	public void sortByRestaurantName() {
-		RestaurantsNameComparator nc = new RestaurantsNameComparator();
-		Collections.sort(restaurants, nc);
-	}
-	public void sortByClientTelephone() {
-		Collections.sort(clients, new SortbyClientTelephone());
-	}
-	public void sortByClientIdNumber() {
-		Collections.sort(clients, new SortbyClientId());
-	}
-	public void sortByRestaurantNitInsertion() {
-		Collections.sort(restaurants);
-	}
-
-	//	sorting anonymus class
-
-	class SortbyClientTelephone implements Comparator<Client> { 
-		@Override
-		public int compare(Client c1, Client c2) {
-			return c2.getTelephone().compareTo(c1.getTelephone()); 
-		} 
-	}
-	class SortbyClientId implements Comparator<Client> { 
-		@Override
-		public int compare(Client c1, Client c2) {
-			return c2.getIdNum().compareTo(c1.getIdNum()); 
-		} 
+	/**
+	 * This method sort the order requested to export
+	 * <b><pre>:<br>Multiple orders must be added<br>
+	 * 
+	 * <b>post:</b>Orders was sorted by bubble way<br>
+	 */
+	public void sortOrder() {
+		class SortOrder implements Comparator<Order>{
+			@Override
+			public int compare(Order o1, Order o2) {
+				int value1 = 0, value2 = 0;
+				value1 = o1.getRestaurantNit().compareTo(o2.getRestaurantNit());
+				if(value1 == 0) {
+					value2 = o2.getClientIdNum().compareTo(o1.getClientIdNum());
+					if(value2 == 0) {
+						return o1.getDate().compareTo(o2.getDate());
+					}
+					else {
+						return value2;
+					}
+				}
+				return value1;
+			}
+		}
+		Collections.sort(orders, new SortOrder());
 	}
 
-	//**************************************************************//
+
+	//Insertion
+
+	/**
+	 * This method sort the restaurants names by insertion way
+	 * <b><pre>:<br>A restaurant as minimum must be added<br>
+	 * 
+	 * <b>post:</b>Restaurants was sorted by insertion way<br>
+	 */
+	public void sortByRestaurantNameBubble() {	
+		Restaurant temp;
+		boolean sorted = false;
+		while (!sorted) {
+			sorted = true;
+			for (int i = 0; i < restaurants.size()-1; i++) {
+				if (restaurants.get(i).getName().compareTo(restaurants.get(i + 1).getName()) > 0) {
+					temp = restaurants.get(i);
+					restaurants.set(i, restaurants.get(i + 1));
+					restaurants.set(i + 1, temp);
+					sorted = false;
+				}
+			}
+		}
+	}
+
+	//Bubble
+	/**
+	 * This method sort the clients telephones by bubble way
+	 * <b><pre>:<br>A client as minimum must be added<br>
+	 * 
+	 * <b>post:</b>Clients was sorted by bubble way<br>
+	 */
+	public void SortbyClientTelephoneInsertion() {
+		for (int i = 1; i < clients.size(); i++) {
+			Client c1 = clients.get(i);
+			int j = i;
+			Client c2 = clients.get(j-1);
+			while(j>0 && c2.getTelephone().compareTo(c1.getTelephone())<0) {
+				clients.set(j,c2);
+				j--;
+				if(j>0) c2 = clients.get(j-1);
+			}
+			clients.set(j,c1);
+		}
+	}
+
+
+
+	//******************************************************************************************************//
 
 	//Updating & searching	
 
@@ -540,7 +587,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 	}
 
-	//**************************************************************//
+	//***************************************************************************************************//
 
 	//Methods of restaurants
 
@@ -613,12 +660,12 @@ public class RestaurantsManager implements Comparable<Client> {
 			info = "**\nThere no restaurants in list***\n";
 		}
 		else {
-			sortByRestaurantName();
+			sortByRestaurantNameBubble();
 			info += getRestaurants()+"\n";		
 		}
 		return info;
 	}
-	//**************************************************************//
+	//************************************************************************************************//
 
 	//Methods of clients
 
@@ -748,7 +795,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		return info;
 	}
 
-	//**************************************************************//
+	//***********************************************************************************************//
 
 	//Methods of products
 
@@ -824,7 +871,7 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return info;
 	}
-	//**************************************************************//
+	//***********************************************************************************************//
 
 	//Methods of orders
 
@@ -897,5 +944,4 @@ public class RestaurantsManager implements Comparable<Client> {
 		}
 		return info;
 	}
-
 }

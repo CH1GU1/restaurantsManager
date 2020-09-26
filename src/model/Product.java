@@ -203,4 +203,18 @@ public class Product implements Serializable {
 		concat += "\nName: "+name+"\nCode: "+code+"\nInformation: "+info+"\nCost: "+"$"+cost+"\nRestaurant NIT: "+restaurantNit+"\n";
 		return concat;
 	}
+	/**
+	 * This method returns the products information on the order to export
+	 * <b><pre>:<br>Multiple restaurant must be added as minimum<br>
+	 * 
+	 * @param separator String to use for separate columns
+	 * @return info 
+	 * 
+	 * <b>post:</b><br>
+	 */
+    public String getInfoToExport(String separator) {
+        String info = "";
+        info += code + separator + quantity;
+        return info;
+    }
 }
