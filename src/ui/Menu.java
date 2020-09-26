@@ -354,7 +354,7 @@ public class Menu {
 	//-------------Import-------------
 
 
-	//FALTA IMPORTAR LAS ORDENES EN ESTE METODO******************************************************
+	
 	/**
 	 * This method import the program data in .csv format chosen by user, could catch an IOException if an error occur during importing.
 	 * <b>pre:</b>The columns of .csv file are separated by comma.<br>
@@ -405,7 +405,7 @@ public class Menu {
 				condition = false;
 				break;
 			case 4:
-				//AQUI SE DEBE IMPORTAR LAS ORDENES XD 
+			
 				break;
 			default:
 				System.out.println("Select a correct option");
@@ -425,6 +425,7 @@ public class Menu {
 	 * <b>post:</b>The data requested in .csv file is imported to the program<br>
 	 */
 	private void SearchClientByName() {
+		restaurantsManager.sortClientsCorrect();
 		System.out.println("**FINDING CLIENT**");
 		System.out.println("Enter the first name of client ");
 		String name = sc.nextLine();
@@ -500,6 +501,7 @@ public class Menu {
 		restaurantsManager.SortbyClientTelephoneInsertion();
 		System.out.println("After sorting by telephone");
 		System.out.println(restaurantsManager.getClients());
+		restaurantsManager.sortClientsCorrect();
 	}
 	//*************************************************************************************
 

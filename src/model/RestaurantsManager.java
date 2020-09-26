@@ -295,6 +295,28 @@ public class RestaurantsManager implements Comparable<Client> {
 	//Sorting methods
 
 	/**
+	 * This method sort the clients by their full names descending
+	 * <b><pre>:<br>Multiple clients must be added<br>
+	 * 
+	 * <b>post:</b>Clients are sorted by full name order descending<br>
+	 */
+	public void sortClientsCorrect() {
+		Comparator<Client> ca = new Comparator<Client>() {		
+			public int compare(Client c1, Client c2) {
+				int comp;
+				String nom1 = c1.getFullName();
+				String nom2 = c2.getFullName();
+				comp = nom2.compareToIgnoreCase(nom1);
+				return comp;
+			}
+		};
+		Collections.sort(clients,ca);
+	}
+
+	
+	
+	
+	/**
 	 * This method sort the order requested to export
 	 * <b><pre>:<br>Multiple orders must be added<br>
 	 * 
